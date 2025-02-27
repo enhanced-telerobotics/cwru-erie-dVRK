@@ -1,0 +1,130 @@
+<Config Version="5">
+  <Robot Name="PSM1" HardwareVersion="QLA1" NumOfActuator="7" NumOfJoint="7" SN="30142">
+    <Actuator ActuatorID="0" AxisID="0" BoardID="6" Type="Revolute">
+      <Drive>
+        <AmpsToBits Offset="32810" Scale="-5242.8800" />
+        <BitsToFeedbackAmps Offset="6.260715" Scale="-0.000190735" />
+        <NmToAmps Scale="0.4040893846" />
+        <MaxCurrent Unit="A" Value="1.340" />
+      </Drive>
+      <Encoder VelocitySource="FIRMWARE">
+        <BitsToPosSI Scale="-0.000442477876106" Unit="deg" />
+        <PositionLimitsSoft Lower="-91.0" Upper="91.0" Unit="deg" />
+      </Encoder>
+      <AnalogIn>
+        <BitsToVolts Offset="0" Scale="6.866455078125e-05" />
+        <VoltsToPosSI Offset="99.12628270319583" Scale="-43.30290772227231" Unit="deg" />
+      </AnalogIn>
+    </Actuator>
+    <Actuator ActuatorID="1" AxisID="1" BoardID="6" Type="Revolute">
+      <Drive>
+        <AmpsToBits Offset="32769" Scale="-5242.8800" />
+        <BitsToFeedbackAmps Offset="6.235144" Scale="-0.000190735" />
+        <NmToAmps Scale="0.4040893846" />
+        <MaxCurrent Unit="A" Value="1.340" />
+      </Drive>
+      <Encoder VelocitySource="FIRMWARE">
+        <BitsToPosSI Scale="-0.000442477876106" Unit="deg" />
+        <PositionLimitsSoft Lower="-53.0" Upper="53.0" Unit="deg" />
+      </Encoder>
+      <AnalogIn>
+        <BitsToVolts Offset="0" Scale="6.866455078125e-05" />
+        <VoltsToPosSI Offset="64.97011865931272" Scale="-28.7814852474007" Unit="deg" />
+      </AnalogIn>
+    </Actuator>
+    <Actuator ActuatorID="2" AxisID="2" BoardID="6" Type="Prismatic">
+      <Drive>
+        <AmpsToBits Offset="32925" Scale="5242.8800" />
+        <BitsToFeedbackAmps Offset="-6.264490" Scale=" 0.000190735" />
+        <NmToAmps Scale="0.0678284321" />
+        <MaxCurrent Unit="A" Value="0.670" />
+      </Drive>
+      <Encoder VelocitySource="FIRMWARE">
+        <BitsToPosSI Scale="0.001296293820559" Unit="mm" />
+        <PositionLimitsSoft Lower="0.0" Upper="240.0" Unit="mm" />
+      </Encoder>
+      <AnalogIn>
+        <BitsToVolts Offset="0" Scale="6.866455078125e-05" />
+        <VoltsToPosSI Offset="-16.5243680086409" Scale="59.25043262536264" Unit="mm" />
+      </AnalogIn>
+    </Actuator>
+    <Actuator ActuatorID="3" AxisID="3" BoardID="6" Type="Revolute">
+      <Drive>
+        <AmpsToBits Offset="32967" Scale="-5242.8800" />
+        <BitsToFeedbackAmps Offset="6.256380" Scale="-0.000190735" />
+        <NmToAmps Scale="1.9497053995" />
+        <MaxCurrent Unit="A" Value="0.670" />
+      </Drive>
+      <Encoder VelocitySource="FIRMWARE">
+        <BitsToPosSI Scale="-0.007685738684885" Unit="deg" />
+        <PositionLimitsSoft Lower="-174.0" Upper="174.0" Unit="deg" />
+      </Encoder>
+      <AnalogIn>
+        <BitsToVolts Offset="0" Scale="6.866455078125e-05" />
+        <VoltsToPosSI Offset="176.6022441561678" Scale="-78.30383629248377" Unit="deg" />
+      </AnalogIn>
+    </Actuator>
+    <Actuator ActuatorID="4" AxisID="0" BoardID="7" Type="Revolute">
+      <Drive>
+        <AmpsToBits Offset="32880" Scale="-5242.8800" />
+        <BitsToFeedbackAmps Offset="6.256010" Scale="-0.000190735" />
+        <NmToAmps Scale="1.9497053995" />
+        <MaxCurrent Unit="A" Value="0.670" />
+      </Drive>
+      <Encoder VelocitySource="FIRMWARE">
+        <BitsToPosSI Scale="-0.007685738684885" Unit="deg" />
+        <PositionLimitsSoft Lower="-174.0" Upper="174.0" Unit="deg" />
+      </Encoder>
+      <AnalogIn>
+        <BitsToVolts Offset="0" Scale="6.866455078125e-05" />
+        <VoltsToPosSI Offset="177.00138595578704" Scale="-77.8624669728515" Unit="deg" />
+      </AnalogIn>
+    </Actuator>
+    <Actuator ActuatorID="5" AxisID="1" BoardID="7" Type="Revolute">
+      <Drive>
+        <AmpsToBits Offset="32919" Scale="5242.8800" />
+        <BitsToFeedbackAmps Offset="-6.248491" Scale=" 0.000190735" />
+        <NmToAmps Scale="1.9497053995" />
+        <MaxCurrent Unit="A" Value="0.670" />
+      </Drive>
+      <Encoder VelocitySource="FIRMWARE">
+        <BitsToPosSI Scale="0.007685738684885" Unit="deg" />
+        <PositionLimitsSoft Lower="-174.0" Upper="174.0" Unit="deg" />
+      </Encoder>
+      <AnalogIn>
+        <BitsToVolts Offset="0" Scale="6.866455078125e-05" />
+        <VoltsToPosSI Offset="172.4395342602546" Scale="-77.0213297241061" Unit="deg" />
+      </AnalogIn>
+    </Actuator>
+    <Actuator ActuatorID="6" AxisID="2" BoardID="7" Type="Revolute">
+      <Drive>
+        <AmpsToBits Offset="32785" Scale="5242.8800" />
+        <BitsToFeedbackAmps Offset="-6.266292" Scale=" 0.000190735" />
+        <NmToAmps Scale="1.9497053995" />
+        <MaxCurrent Unit="A" Value="0.670" />
+      </Drive>
+      <Encoder VelocitySource="FIRMWARE">
+        <BitsToPosSI Scale="0.007685738684885" Unit="deg" />
+        <PositionLimitsSoft Lower="-174.0" Upper="174.0" Unit="deg" />
+      </Encoder>
+      <AnalogIn>
+        <BitsToVolts Offset="0" Scale="6.866455078125e-05" />
+        <VoltsToPosSI Offset="175.54662501692067" Scale="-78.60002219766989" Unit="deg" />
+      </AnalogIn>
+    </Actuator>
+    <Potentiometers>
+      <Tolerance Axis="0" Distance="5.0" Latency="0.01" Unit="deg" />
+      <Tolerance Axis="1" Distance="5.0" Latency="0.01" Unit="deg" />
+      <Tolerance Axis="2" Distance="5.0" Latency="0.01" Unit="mm" />
+      <Tolerance Axis="3" Distance="5.0" Latency="0.01" Unit="deg" />
+      <Tolerance Axis="4" Distance="5.0" Latency="0.01" Unit="deg" />
+      <Tolerance Axis="5" Distance="5.0" Latency="0.01" Unit="deg" />
+      <Tolerance Axis="6" Distance="5.0" Latency="0.01" Unit="deg" />
+    </Potentiometers>
+  </Robot>
+  <DallasChip BoardID="7" Name="PSM1-Dallas" />
+  <DigitalIn BitID="0" BoardID="6" Debounce="0.2" Name="PSM1-SUJClutch" Pressed="1" Trigger="all" />
+  <DigitalIn BitID="2" BoardID="6" Debounce="0.2" Name="PSM1-ManipClutch" Pressed="1" Trigger="all" />
+  <DigitalIn BitID="7" BoardID="7" Debounce="0.2" Name="PSM1-Tool" Pressed="1" Trigger="all" />
+  <DigitalIn BitID="10" BoardID="7" Debounce="0.2" Name="PSM1-Adapter" Pressed="1" Trigger="all" />
+</Config>
