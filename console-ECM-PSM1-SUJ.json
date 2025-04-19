@@ -1,0 +1,35 @@
+/* -*- Mode: Javascript; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+{
+    "io": {
+        "footpedals": "io/sawRobotIO1394-MTML-foot-pedals.xml"
+    }
+    ,
+    "arms":
+    [
+        {
+            "name": "SUJ",
+            "type": "SUJ_Fixed",
+            "kinematic": "suj-fixed.json"
+        }
+        ,
+        {
+            "name": "PSM1",
+            "type": "PSM",
+            "serial": "30142",
+            "base-frame": {
+                "component": "SUJ",
+                "interface": "PSM1"
+            }
+        }
+        ,
+        {
+            "name": "ECM",
+            "type": "ECM",
+            "serial": "30811",
+            "base-frame": {
+                "component": "SUJ",
+                "interface": "ECM"
+            }
+        }
+    ]
+}
