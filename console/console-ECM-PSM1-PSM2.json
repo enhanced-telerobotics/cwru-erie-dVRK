@@ -2,26 +2,25 @@
 {
     "io": {
         "footpedals": "io/sawRobotIO1394-MTML-foot-pedals.xml"
-    }
-    ,
-    "arms":
-    [
-        {
-            "name": "PSM2",
-            "type": "PSM",
-            "serial": "28084"
-        }
-        ,
+    },
+    "arms": [
         {
             "name": "PSM1",
             "type": "PSM",
-            "serial": "30142"
-        }
-        ,
+            "serial": "30142",
+            "arm": "arm/PSM1-30142.json"
+        },
+        {
+            "name": "PSM2",
+            "type": "PSM",
+            "serial": "28084",
+            "arm": "arm/PSM2-28084.json"
+        },
         {
             "name": "ECM",
             "type": "ECM",
-            "serial": "30811"
+            "serial": "30811",
+            "arm": "arm/ECM-30811.json"
         }
     ]
 }

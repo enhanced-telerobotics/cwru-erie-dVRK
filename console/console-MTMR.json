@@ -7,9 +7,10 @@
     "arms":
     [
         {
-            "name": "MTML",
+            "name": "MTMR",
             "type": "MTM",
-            "serial": "64307"
+            "serial": "30593",
+            "arm": "arm/MTMR-30593.json"
         }
     ]
 }

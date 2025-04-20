@@ -2,14 +2,13 @@
     // see https://github.com/jhu-dvrk/sawIntuitiveResearchKit/wiki/Configuration-File-Formats
     "io": {
         // "close-all-relays": true  // uncomment to avoid calling qlacommand -c close-relays
-    }
-    ,
-    "arms":
-    [
+    },
+    "arms": [
         {
             "name": "ECM",
             "type": "ECM",
-            "serial": "30811"
+            "serial": "30811",
+            "arm": "arm/ECM-30811.json"
         }
     ]
 }

@@ -1,0 +1,7 @@
+{
+    // see https://github.com/jhu-dvrk/sawIntuitiveResearchKit/wiki/Configuration-File-Formats
+    "kinematic": "kinematic/psm.json"
+    , "generation": "Classic"
+    , "tool-detection": "FIXED"
+    , "tool": "CADIERE_FORCEPS:420049"
+}

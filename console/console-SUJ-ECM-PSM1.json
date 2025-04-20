@@ -2,30 +2,28 @@
 {
     "io": {
         "footpedals": "io/sawRobotIO1394-MTML-foot-pedals.xml"
-    }
-    ,
-    "arms":
-    [
+    },
+    "arms": [
         {
             "name": "SUJ",
             "type": "SUJ_Fixed",
-            "kinematic": "suj-fixed.json"
-        }
-        ,
+            "kinematic": "arm/suj-fixed.json"
+        },
         {
             "name": "PSM1",
             "type": "PSM",
             "serial": "30142",
+            "arm": "arm/PSM1-30142.json",
             "base-frame": {
                 "component": "SUJ",
                 "interface": "PSM1"
             }
-        }
-        ,
+        },
         {
             "name": "ECM",
             "type": "ECM",
             "serial": "30811",
+            "arm": "arm/ECM-30811.json",
             "base-frame": {
                 "component": "SUJ",
                 "interface": "ECM"

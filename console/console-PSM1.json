@@ -7,9 +7,10 @@
     "arms":
     [
         {
-            "name": "PSM2",
+            "name": "PSM1",
             "type": "PSM",
-            "serial": "28084"
+            "serial": "30142",
+            "arm": "arm/PSM1-30142.json"
         }
     ]
 }
