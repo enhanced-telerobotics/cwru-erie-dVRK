@@ -20,6 +20,16 @@
             }
         },
         {
+            "name": "PSM2",
+            "type": "PSM",
+            "serial": "28084",
+            "arm": "arm/PSM2-28084.json",
+            "base-frame": {
+                "component": "SUJ",
+                "interface": "PSM2"
+            }
+        },
+        {
             "name": "ECM",
             "type": "ECM",
             "serial": "30811",
@@ -60,10 +70,13 @@
         {
             "mtm": "MTMR",
             "psm": "PSM1"
+        },
+        {
+            "mtm": "MTML",
+            "psm": "PSM2"
         }
     ],
-    "ecm-teleop":
-    {
+    "ecm-teleop": {
         "mtm-left": "MTML",
         "mtm-right": "MTMR",
         "ecm": "ECM"
