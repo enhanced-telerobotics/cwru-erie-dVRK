@@ -3,5 +3,5 @@
     "kinematic": "kinematic/psm.json"
     , "generation": "Classic"
     , "tool-detection": "FIXED"
-    , "tool": "CADIERE_FORCEPS:420049"
+    , "tool": "LARGE_NEEDLE_DRIVER:420006[12]"
 }
