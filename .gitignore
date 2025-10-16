@@ -1,4 +1,5 @@
 share
 *.txt
+arm/suj-fixed.json
 
 __pycache__
