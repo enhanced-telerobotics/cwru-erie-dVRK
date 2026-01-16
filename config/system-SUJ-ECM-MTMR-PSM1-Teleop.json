@@ -1,0 +1,92 @@
+{
+    "$id" : "dvrk-system.schema.json",
+    "$version" : "1",
+    "IOs" : 
+    [
+        {
+            "name" : "IO",
+            "port" : "fw",
+            "protocol" : "broadcast-read-write"
+        }
+    ],
+    "arms" : 
+    [
+        {
+            "arm_file" : "../arm/suj-fixed.json",
+            "name" : "SUJ",
+            "type" : "SUJ_Fixed"
+        },
+        {
+            "IO" : "IO",
+            "IO_file" : "../io/sawRobotIO1394-PSM1-30142.json",
+            "arm_file" : "../arm/PSM1-30142.json",
+            "base_frame" : 
+            {
+                "component" : "SUJ",
+                "interface" : "PSM1"
+            },
+            "name" : "PSM1",
+            "serial" : "30142",
+            "type" : "PSM"
+        },
+        {
+            "IO" : "IO",
+            "IO_file" : "../io/sawRobotIO1394-ECM-30811.json",
+            "arm_file" : "../arm/ECM-30811.json",
+            "base_frame" : 
+            {
+                "component" : "SUJ",
+                "interface" : "ECM"
+            },
+            "name" : "ECM",
+            "serial" : "30811",
+            "type" : "ECM"
+        },
+        {
+            "IO" : "IO",
+            "IO_file" : "../io/sawRobotIO1394-MTMR-30593.json",
+            "IO_gripper_file": "../io/sawRobotIO1394-MTMR-gripper-30593.json",
+            "arm_file" : "../arm/MTMR-30593.json",
+            "base_frame" : 
+            {
+                "reference_frame" : "HRSV",
+                "transform": [[ -1.0,  0.0,          0.0,         -0.180],
+                              [  0.0,  0.866025404,  0.5,          0.400],
+                              [  0.0,  0.5,         -0.866025404,  0.475],
+                              [  0.0,  0.0,          0.0,          1.0]]
+            },
+            "name" : "MTMR",
+            "serial" : "30593",
+            "type" : "MTM"
+        }
+    ],
+    "consoles" : 
+    [
+        {
+            "IO_pedals" : 
+            {
+                "IO" : "IO",
+                "IO_file" : "io/sawRobotIO1394-MTML-foot-pedals-QLA1.json"
+            },
+            "input_type" : "PEDALS_ONLY",
+            "name" : "Console",
+            "teleop_ECMs" : [],
+            "teleop_PSMs" : 
+            [
+                {
+                    "MTM" : "MTMR",
+                    "PSM" : "PSM1",
+                    "PSM_base_frame" : 
+                    {
+                        "component" : "ECM",
+                        "interface" : "Arm"
+                    },
+                    "configure_parameter" : 
+                    {
+                        "scale" : 0.3
+                    }
+                }
+            ]
+        }
+    ]
+}

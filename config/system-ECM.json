@@ -1,0 +1,32 @@
+{
+    "$id" : "dvrk-system.schema.json",
+    "$version" : "1",
+    "IOs" : 
+    [
+        {
+            "name" : "IO",
+            "port" : "fw",
+            "protocol" : "broadcast-read-write"
+        }
+    ],
+    "arms" : 
+    [
+        {
+            "IO" : "IO",
+            "IO_file" : "../io/sawRobotIO1394-ECM-30811.json",
+            "arm_file" : "../arm/ECM-30811.json",
+            "name" : "ECM",
+            "serial" : "30811",
+            "type" : "ECM"
+        }
+    ],
+    "consoles" : 
+    [
+        {
+            "input_type" : "SIMULATED",
+            "name" : "Console",
+            "teleop_ECMs" : [],
+            "teleop_PSMs" : []
+        }
+    ]
+}
