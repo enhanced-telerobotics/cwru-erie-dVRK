@@ -30,10 +30,10 @@
             }
         },
         {
-            "name": "MTMR",
+            "name": "MTML",
             "type": "MTM",
-            "serial": "30593",
-            "arm": "arm/MTMR-30593.json",
+            "serial": "64307",
+            "arm": "arm/MTML-64307.json",
             "base-frame": {
                 "reference-frame": "HRSV",
                 "transform": [[ -1.0,  0.0,  0.0,  0.0],
