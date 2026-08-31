@@ -1,0 +1,29 @@
+{
+    // see https://dvrk.readthedocs.io
+    "$id": "dvrk-system.schema.json",
+    "$version": "1",
+    "IOs":
+    [
+        {
+            "name": "IO1",
+            "port": "fw" // fw, udpfw or udp
+        }
+    ]
+    ,
+    "arms":
+    [
+        {
+            "name": "MTML",
+            "type": "MTM",
+            "serial": "39494",
+            "IO": "IO1" // defined in IOs
+        }
+	,
+        {
+            "name": "MTMR",
+            "type": "MTM",
+            "serial": "56216",
+            "IO": "IO1" // defined in IOs
+        }
+    ]
+}

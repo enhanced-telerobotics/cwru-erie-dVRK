@@ -1,0 +1,152 @@
+/* -*- Mode: Javascript; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+{
+    // see https://dvrk.readthedocs.io
+    "$id": "dvrk-system.schema.json",
+    "$version": "1",
+    "IOs": [
+        {
+            "name": "IO1",
+            "port": "fw" // fw, udpfw or udp
+        }
+    ],
+    "arms": [
+        {
+            "name": "SUJ",
+            "type": "SUJ_Si",
+            "arm_file": "kinematic/suj-si.json"
+        }
+        ,
+        {
+            "name": "ECM",
+            "type": "ECM",
+            "serial": "344539",
+            "IO": "IO1",
+            "base_frame": {
+                "component": "SUJ",
+                "interface": "ECM"
+            }
+        }
+        ,
+        {
+            "name": "PSM1",
+            "type": "PSM",
+            "serial": "276682",
+            "IO": "IO1",
+            "base_frame": {
+                "component": "SUJ",
+                "interface": "PSM1"
+            }
+        }
+        ,
+        {
+            "name": "PSM2",
+            "type": "PSM",
+            "serial": "360087",
+            "IO": "IO1",
+            "base_frame": {
+                "component": "SUJ",
+                "interface": "PSM2"
+            }
+        }
+        ,
+        {
+            "name": "MTML",
+            "type": "MTM",
+            "serial": "39494",
+            "IO": "IO1",
+            "base_frame": {
+                "reference_frame": "HRSV",
+                "transform": [
+                    [
+                        -1.0,
+                        0.0,
+                        0.0,
+                        0.180
+                    ],
+                    [
+                        0.0,
+                        0.866025404,
+                        0.5,
+                        0.400
+                    ],
+                    [
+                        0.0,
+                        0.5,
+                        -0.866025404,
+                        0.475
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            }
+        },
+        {
+            "name": "MTMR",
+            "type": "MTM",
+            "serial": "56216",
+            "IO": "IO1",
+            "base_frame": {
+                "reference_frame": "HRSV",
+                "transform": [
+                    [
+                        -1.0,
+                        0.0,
+                        0.0,
+                        -0.180
+                    ],
+                    [
+                        0.0,
+                        0.866025404,
+                        0.5,
+                        0.400
+                    ],
+                    [
+                        0.0,
+                        0.5,
+                        -0.866025404,
+                        0.475
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            }
+        }
+    ]
+    ,
+    "consoles": [
+        {
+            "IO_pedals": {
+                "IO": "IO1",
+                "IO_file": "io/sawRobotIO1394-MTMR-foot-pedals-DQLA.json"
+            },
+            "input_type": "PEDALS_ONLY",
+            "name": "Console"
+            ,
+            "teleop_PSMs": [
+                {
+                    "MTM": "MTMR",
+                    "PSM": "PSM1"
+                },
+                {
+                    "MTM": "MTML",
+                    "PSM": "PSM2"
+                }
+            ],
+            "teleop_ECMs": [
+                {
+                    "MTML": "MTML",
+                    "MTMR": "MTMR",
+                    "ECM": "ECM"
+                }
+            ]
+        }
+    ]
+}
