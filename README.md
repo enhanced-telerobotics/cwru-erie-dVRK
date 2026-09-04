@@ -24,59 +24,40 @@ starts.
 Do not start another `dvrk_system` process while one of these launch files is
 running. Two processes must not attempt to access the same hardware.
 
-## Single-arm bringup
+## Full dVRK system
 
-Use `launch/dvrk_bringup.launch.py` to start one arm. Its defaults select the
-real Si PSM1 and `/home/erie_lab/cwru-erie-dVRK/system/system-PSM1.json`.
+Use `launch/dvrk_full.launch.py` to start the complete real system for
+teleoperation:
 
-```bash
-ros2 launch launch/dvrk_bringup.launch.py
-```
+- SUJ, ECM, PSM1, and PSM2
+- MTML and MTMR
+- One `dvrk_system` process
+- Patient-cart RViz window
+- Surgeon-console RViz window
 
-The command starts the equivalent of:
-
-```bash
-ros2 run dvrk_robot dvrk_system -j system/system-PSM1.json
-```
-
-It also starts the PSM1 joint-state publisher, robot-state publisher, TF, and
-RViz. RViz follows the physical arm using `/PSM1/measured_js` and
-`/PSM1/jaw/measured_js`.
-
-To select another arm:
+Run:
 
 ```bash
-ros2 launch launch/dvrk_bringup.launch.py arm:=PSM2
+ros2 launch launch/dvrk_full.launch.py
 ```
 
-By default, this selects `system/system-PSM2.json`. A configuration can also be passed
-explicitly:
+The default hardware configuration is:
+
+```text
+system/system-SUJ-ECM-MTML-PSM2-MTMR-PSM1-Teleop.json
+```
+
+To override it:
 
 ```bash
-ros2 launch launch/dvrk_bringup.launch.py \
-  arm:=PSM2 \
-  generation:=Si \
-  system_config:=/home/erie_lab/cwru-erie-dVRK/system/system-PSM2.json
+ros2 launch launch/dvrk_full.launch.py \
+  system_config:=/absolute/path/to/system.json
 ```
 
-To run the single-arm kinematic simulation instead of hardware:
-
-```bash
-ros2 launch launch/dvrk_bringup.launch.py simulated:=true
-```
-
-Common single-arm arguments:
-
-| Argument | Default | Purpose |
-|---|---|---|
-| `arm` | `PSM1` | Arm name, such as `PSM1`, `PSM2`, or `ECM` |
-| `generation` | `Si` | Robot generation: `Classic`, `Si`, or `Virtual` |
-| `simulated` | `false` | Select kinematic simulation when `true` |
-| `system_config` | `system/system-<arm>.json` | Real-hardware dVRK system configuration |
-| `instrument` | generation default | PSM instrument model, such as `420006` |
-| `endoscope` | empty | ECM endoscope model |
-| `rate` | `50.0` | State publication rate in Hz |
-| `show_rcm` | `true` | Show the remote center of motion in the model |
+This launch is intended for the real combined system and does not provide a
+simulation mode. Do not run the patient-cart, surgeon-console, or individual-arm
+hardware launch at the same time, because each would start another
+`dvrk_system` process for the same hardware.
 
 ## Patient-cart bringup
 
@@ -162,67 +143,59 @@ The MTM visualization follows `/MTML/measured_js` and
 | `system_config` | `system/system-MTML-MTMR.json` | Real MTM configuration |
 | `rate` | `50.0` | State publication rate in Hz |
 
-## Full dVRK system
+## Single-arm bringup
 
-Use `launch/dvrk_full.launch.py` to start the complete real system for
-teleoperation:
-
-- SUJ, ECM, PSM1, and PSM2
-- MTML and MTMR
-- One `dvrk_system` process
-- Patient-cart RViz window
-- Surgeon-console RViz window
-
-Run:
+Use `launch/dvrk_bringup.launch.py` to start one arm. Its defaults select the
+real Si PSM1 and `/home/erie_lab/cwru-erie-dVRK/system/system-PSM1.json`.
 
 ```bash
-ros2 launch launch/dvrk_full.launch.py
+ros2 launch launch/dvrk_bringup.launch.py
 ```
 
-The default hardware configuration is:
-
-```text
-system/system-SUJ-ECM-MTML-PSM2-MTMR-PSM1-Teleop.json
-```
-
-To override it:
+The command starts the equivalent of:
 
 ```bash
-ros2 launch launch/dvrk_full.launch.py \
-  system_config:=/absolute/path/to/system.json
+ros2 run dvrk_robot dvrk_system -j system/system-PSM1.json
 ```
 
-This launch is intended for the real combined system and does not provide a
-simulation mode. Do not run the patient-cart, surgeon-console, or individual-arm
-hardware launch at the same time, because each would start another
-`dvrk_system` process for the same hardware.
+It also starts the PSM1 joint-state publisher, robot-state publisher, TF, and
+RViz. RViz follows the physical arm using `/PSM1/measured_js` and
+`/PSM1/jaw/measured_js`.
 
-## Verify real-robot state updates
-
-After the robot is running, check that measured joint states are being
-published:
+To select another arm:
 
 ```bash
-ros2 topic hz /PSM1/measured_js
-ros2 topic echo /PSM1/measured_js --once
-ros2 topic hz /PSM1/jaw/measured_js
+ros2 launch launch/dvrk_bringup.launch.py arm:=PSM2
 ```
 
-For the complete cart, useful checks include:
+By default, this selects `system/system-PSM2.json`. A configuration can also be passed
+explicitly:
 
 ```bash
-ros2 topic hz /PSM2/measured_js
-ros2 topic hz /ECM/measured_js
-ros2 topic hz /SUJ/PSM1/measured_js
-ros2 topic hz /SUJ/PSM2/measured_js
-ros2 topic hz /SUJ/ECM/measured_js
+ros2 launch launch/dvrk_bringup.launch.py \
+  arm:=PSM2 \
+  generation:=Si \
+  system_config:=/home/erie_lab/cwru-erie-dVRK/system/system-PSM2.json
 ```
 
-List the running dVRK and visualization nodes with:
+To run the single-arm kinematic simulation instead of hardware:
 
 ```bash
-ros2 node list
+ros2 launch launch/dvrk_bringup.launch.py simulated:=true
 ```
+
+Common single-arm arguments:
+
+| Argument | Default | Purpose |
+|---|---|---|
+| `arm` | `PSM1` | Arm name, such as `PSM1`, `PSM2`, or `ECM` |
+| `generation` | `Si` | Robot generation: `Classic`, `Si`, or `Virtual` |
+| `simulated` | `false` | Select kinematic simulation when `true` |
+| `system_config` | `system/system-<arm>.json` | Real-hardware dVRK system configuration |
+| `instrument` | generation default | PSM instrument model, such as `420006` |
+| `endoscope` | empty | ECM endoscope model |
+| `rate` | `50.0` | State publication rate in Hz |
+| `show_rcm` | `true` | Show the remote center of motion in the model |
 
 ## Troubleshooting
 

@@ -1,12 +1,20 @@
 # Workspace
 .vscode/
+
+# Base-to-base calibrations
 suj-fixed.json
-sawRobotIO1394-*
+
+# Running logs
 cisstLog*.txt
+
+# Potentionmeter calibrations
 *.csv
-*.npz
-data_collection.json
-workspace.json
+
+# IO calibrations
+sawRobotIO1394-*
+
+# Gravity compensation logs
+[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]_[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
