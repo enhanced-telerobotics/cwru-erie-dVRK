@@ -7,11 +7,8 @@ suj-fixed.json
 # Running logs
 cisstLog*.txt
 
-# Potentionmeter calibrations
+# Potentionmeter calibrations logs
 *.csv
-
-# IO calibrations
-sawRobotIO1394-*
 
 # Gravity compensation logs
 [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]_[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
