@@ -123,13 +123,16 @@
     ,
     "consoles": [
         {
+            "IO_head_sensor": {
+                "IO": "IO1",
+                "IO_file": "io/sawRobotIO1394-MTMR-dv-head-sensor.json"
+            },
             "IO_pedals": {
                 "IO": "IO1",
                 "IO_file": "io/sawRobotIO1394-MTMR-foot-pedals-DQLA.json"
             },
-            "input_type": "PEDALS_ONLY",
-            "name": "Console"
-            ,
+            "input_type": "PEDALS_ISI_HEAD_SENSOR",
+            "name": "Console",
             "teleop_PSMs": [
                 {
                     "MTM": "MTMR",
