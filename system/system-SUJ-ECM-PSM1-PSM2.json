@@ -3,6 +3,9 @@
     // see https://dvrk.readthedocs.io
     "$id": "dvrk-system.schema.json",
     "$version": "1",
+    "settings": {
+        "path": ["io"]
+    },
     "IOs":
     [
         {
@@ -23,6 +26,8 @@
             "name": "ECM",
             "type": "ECM",
             "serial": "344539",
+            "arm_file": "../arm/ECM-344539.json",
+            "IO_file": "../io/sawRobotIO1394-ECM-344539.json",
             "IO": "IO1",
             "base_frame": {
                 "component": "SUJ",
@@ -34,6 +39,8 @@
             "name": "PSM1",
             "type": "PSM",
             "serial": "276682",
+            "arm_file": "../arm/PSM1-276682.json",
+            "IO_file": "../io/sawRobotIO1394-PSM1-276682.json",
             "IO": "IO1",
             "base_frame": {
                 "component": "SUJ",
@@ -45,6 +52,8 @@
             "name": "PSM2",
             "type": "PSM",
             "serial": "360087",
+            "arm_file": "../arm/PSM2-360087.json",
+            "IO_file": "../io/sawRobotIO1394-PSM2-360087.json",
             "IO": "IO1",
             "base_frame": {
                 "component": "SUJ",

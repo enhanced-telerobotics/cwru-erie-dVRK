@@ -3,6 +3,9 @@
     // see https://dvrk.readthedocs.io
     "$id": "dvrk-system.schema.json",
     "$version": "1",
+    "settings": {
+        "path": ["io"]
+    },
     "arms":
     [
         {

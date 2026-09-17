@@ -5,6 +5,20 @@ one dVRK arm or the complete patient cart. Real-hardware mode is the default.
 The launch files start `dvrk_system`, the required state publishers, TF, and
 RViz, so a separate `dvrk_system` command is not needed.
 
+## Configuration layout
+
+- `arm/`: arm configurations, MTM gravity compensation, and the local SUJ kinematic copy.
+- `io/`: robot, gripper, and Si SUJ IO configurations and potentiometer lookup tables.
+- `system/`: system configurations with explicit relative paths to arm and IO files.
+- `cal/`: calibration source files.
+
+Si SUJ system configurations include `io/` in `settings.path` because dVRK
+locates SUJ IO files by name. The hardware launch files set the working directory
+to this repository; run direct `dvrk_system` commands from here as well.
+Potentiometer lookup-table paths use the `io/` prefix because the IO loader
+resolves them from the working directory.
+The SUJ arm configurations continue to use the upstream `kinematic/suj-si.json`.
+
 ## Prerequisites
 
 The examples assume ROS 2 Humble and the dVRK 2.5.0 workspace are installed at

@@ -50,6 +50,7 @@ def generate_launch_description():
             package='dvrk_robot',
             executable='dvrk_system',
             arguments=['-j', system_config],
+            cwd=repository_root,
             output='screen',
         ),
     ]

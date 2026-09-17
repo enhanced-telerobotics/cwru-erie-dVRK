@@ -16,6 +16,8 @@
             "name": "ECM",
             "type": "ECM",
             "serial": "344539",
+            "arm_file": "../arm/ECM-344539.json",
+            "IO_file": "../io/sawRobotIO1394-ECM-344539.json",
             "IO": "IO1" // defined in IOs
         }
     ]

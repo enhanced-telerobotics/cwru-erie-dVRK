@@ -38,6 +38,7 @@ def generate_launch_description():
         executable='dvrk_system',
         condition=UnlessCondition(simulated),
         arguments=['-j', system_config],
+        cwd=repository_root,
         output='screen',
     )
 

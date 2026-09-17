@@ -16,6 +16,8 @@
             "name": "PSM3",
             "type": "PSM",
             "serial": "275441",
+            "arm_file": "../arm/PSM3-275441.json",
+            "IO_file": "../io/sawRobotIO1394-PSM3-275441.json",
             "IO": "IO1" // defined in IOs
         }
     ]

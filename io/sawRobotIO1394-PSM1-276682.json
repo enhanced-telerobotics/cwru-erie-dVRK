@@ -318,7 +318,7 @@
                         "latency": 0.01
                     }
                 ],
-                "lookup_table_file": "sawRobotIO1394-PSM1-276682-PotentiometerLookupTable.json"
+                "lookup_table_file": "io/sawRobotIO1394-PSM1-276682-PotentiometerLookupTable.json"
             }
         }
     ],

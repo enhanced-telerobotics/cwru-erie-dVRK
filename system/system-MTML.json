@@ -16,6 +16,9 @@
             "name": "MTML",
             "type": "MTM",
             "serial": "39494",
+            "arm_file": "../arm/MTML-39494.json",
+            "IO_file": "../io/sawRobotIO1394-MTML-39494.json",
+            "IO_gripper_file": "../io/sawRobotIO1394-MTML-gripper-39494.json",
             "IO": "IO1" // defined in IOs
         }
     ]

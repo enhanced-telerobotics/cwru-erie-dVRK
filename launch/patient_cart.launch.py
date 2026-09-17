@@ -80,6 +80,7 @@ def generate_launch_description():
         executable = 'dvrk_system',
         condition = UnlessCondition(simulated),
         arguments = ['-j', system_config],
+        cwd=os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)),
         output = 'screen',
     )
     ld.add_action(simulated_dvrk_node)
