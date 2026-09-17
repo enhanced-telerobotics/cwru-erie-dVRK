@@ -1,9 +1,8 @@
 {
-    // see https://github.com/jhu-dvrk/sawIntuitiveResearchKit/wiki/Configuration-File-Formats
-    "kinematic": "kinematic/psm.json"
-    , "generation": "Classic"
-    // , "tool-detection": "MANUAL"
-    , "tool-detection": "FIXED"
-    // , "tool-detection": "AUTOMATIC"
-    , "tool": "LARGE_NEEDLE_DRIVER:400006"
+    "$id": "dvrk-psm.schema.json",
+    "$version": "1",
+    "kinematic": "kinematic/PSM.json",
+    "generation": "Classic",
+    "tool_detection": "FIXED",
+    "tool": "LARGE_NEEDLE_DRIVER:400006"
 }

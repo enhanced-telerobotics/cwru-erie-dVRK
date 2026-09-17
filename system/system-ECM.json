@@ -1,0 +1,23 @@
+{
+    "$id" : "dvrk-system.schema.json",
+    "$version" : "1",
+    "IOs" : 
+    [
+        {
+            "name" : "IO",
+            "port" : "udpfw",
+            "protocol" : "sequential-read-broadcast-write"
+        }
+    ],
+    "arms" : 
+    [
+        {
+            "IO" : "IO",
+            "IO_file" : "../io/sawRobotIO1394-ECM-30811.json",
+            "arm_file" : "../arm/ECM-30811.json",
+            "name" : "ECM",
+            "serial" : "30811",
+            "type" : "ECM"
+        }
+    ]
+}

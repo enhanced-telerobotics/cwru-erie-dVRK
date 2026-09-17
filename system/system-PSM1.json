@@ -1,0 +1,21 @@
+{
+    "$id": "dvrk-system.schema.json",
+    "$version": "1",
+    "IOs": [
+        {
+            "name": "IO1",
+            "port": "udpfw",
+            "protocol": "sequential-read-broadcast-write"
+        }
+    ],
+    "arms": [
+        {
+            "name": "PSM1",
+            "type": "PSM",
+            "serial": "30142",
+            "IO": "IO1",
+            "arm_file": "../arm/PSM1-30142.json",
+            "IO_file": "../io/sawRobotIO1394-PSM1-30142.json"
+        }
+    ]
+}

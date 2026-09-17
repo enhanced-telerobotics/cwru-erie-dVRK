@@ -1,0 +1,22 @@
+{
+    "$id": "dvrk-system.schema.json",
+    "$version": "1",
+    "IOs": [
+        {
+            "name": "IO1",
+            "port": "udpfw",
+            "protocol": "sequential-read-broadcast-write"
+        }
+    ],
+    "arms": [
+        {
+            "name": "MTML",
+            "type": "MTM",
+            "serial": "64307",
+            "IO": "IO1",
+            "arm_file": "../arm/MTML-64307.json",
+            "IO_file": "../io/sawRobotIO1394-MTML-64307.json",
+            "IO_gripper_file": "../io/sawRobotIO1394-MTML-gripper-64307.json"
+        }
+    ]
+}
