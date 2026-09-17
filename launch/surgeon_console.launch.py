@@ -106,7 +106,7 @@ def generate_launch_description():
     # RViz
     rviz_config_file = [
         PathJoinSubstitution([FindPackageShare('dvrk_model'),
-                              'rviz/Classic/surgeon_console.rviz'])
+                              'rviz/Classic/surgeon-console.rviz'])
     ]
     rviz_node = Node(
         package = 'rviz2',

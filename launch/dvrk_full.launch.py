@@ -111,7 +111,7 @@ def generate_launch_description():
                 FindPackageShare('dvrk_model'),
                 'rviz',
                 'Classic',
-                'surgeon_console.rviz',
+                'surgeon-console.rviz',
             ])],
             output='log',
         ),
