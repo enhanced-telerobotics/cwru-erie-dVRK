@@ -8,6 +8,7 @@
     [
         {
             "name": "MTMR",
+            "pid": "/home/erie_lab/cwru-erie-dVRK/pid/sawControllersPID-MTMR-pot-feedback.json",
             "type": "MTM",
             "serial": "30593",
             "arm": "arm/MTMR-30593.json"

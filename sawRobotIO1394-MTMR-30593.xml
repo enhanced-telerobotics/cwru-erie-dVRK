@@ -55,7 +55,7 @@
         <NmToAmps Scale="2.1681909049" />
         <MaxCurrent Unit="A" Value="0.670" />
       </Drive>
-      <Encoder VelocitySource="FIRMWARE">
+      <Encoder VelocitySource="FIRMWARE" PositionSource="POTENTIOMETER" PotentiometerVelocityTimeConstant="0.01">
         <BitsToPosSI Scale="0.008547008547009" Unit="deg" />
         <PositionLimitsSoft Lower="-120.0" Upper="240.0" Unit="deg" />
       </Encoder>
