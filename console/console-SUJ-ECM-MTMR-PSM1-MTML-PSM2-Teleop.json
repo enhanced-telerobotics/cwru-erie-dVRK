@@ -3,6 +3,9 @@
     "io": {
         "footpedals": "io/sawRobotIO1394-MTML-foot-pedals.xml"
     },
+    "operator-present": {
+        "io": "io/sawRobotIO1394-MTML-dv-head-sensor.xml"
+    },
     "arms": [
         {
             "name": "SUJ",
