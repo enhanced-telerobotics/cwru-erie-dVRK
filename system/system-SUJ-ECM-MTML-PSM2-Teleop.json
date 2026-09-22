@@ -1,0 +1,104 @@
+{
+    "$id": "dvrk-system.schema.json",
+    "$version": "1",
+    "IOs": [
+        {
+            "name": "IO1",
+            "port": "fw",
+            "protocol": "sequential-read-broadcast-write"
+        }
+    ],
+    "arms": [
+        {
+            "name": "SUJ",
+            "type": "SUJ_Fixed",
+            "arm_file": "../arm/suj-fixed.json"
+        },
+        {
+            "name": "PSM2",
+            "type": "PSM",
+            "serial": "28084",
+            "base_frame": {
+                "component": "SUJ",
+                "interface": "PSM2"
+            },
+            "IO": "IO1",
+            "arm_file": "../arm/PSM2-28084.json",
+            "IO_file": "../io/sawRobotIO1394-PSM2-28084.json"
+        },
+        {
+            "name": "ECM",
+            "type": "ECM",
+            "serial": "30811",
+            "base_frame": {
+                "component": "SUJ",
+                "interface": "ECM"
+            },
+            "IO": "IO1",
+            "arm_file": "../arm/ECM-30811.json",
+            "IO_file": "../io/sawRobotIO1394-ECM-30811.json"
+        },
+        {
+            "name": "MTML",
+            "type": "MTM",
+            "serial": "64307",
+            "base_frame": {
+                "reference_frame": "HRSV",
+                "transform": [
+                    [
+                        -1.0,
+                        0.0,
+                        0.0,
+                        0.18
+                    ],
+                    [
+                        0.0,
+                        0.866025404,
+                        0.5,
+                        0.4
+                    ],
+                    [
+                        0.0,
+                        0.5,
+                        -0.866025404,
+                        0.475
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            },
+            "IO": "IO1",
+            "arm_file": "../arm/MTML-64307.json",
+            "IO_file": "../io/sawRobotIO1394-MTML-64307.json",
+            "IO_gripper_file": "../io/sawRobotIO1394-MTML-gripper-64307.json"
+        }
+    ],
+    "consoles": [
+        {
+            "name": "console",
+            "input_type": "PEDALS_ISI_HEAD_SENSOR",
+            "IO_pedals": {
+                "IO": "IO1",
+                "IO_file": "io/sawRobotIO1394-MTML-foot-pedals-QLA1.json"
+            },
+            "IO_head_sensor": {
+                "IO": "IO1",
+                "IO_file": "io/sawRobotIO1394-MTML-dv-head-sensor.json"
+            },
+            "teleop_PSMs": [
+                {
+                    "MTM": "MTML",
+                    "PSM": "PSM2",
+                    "PSM_base_frame": {
+                        "component": "ECM",
+                        "interface": "Arm"
+                    }
+                }
+            ]
+        }
+    ]
+}

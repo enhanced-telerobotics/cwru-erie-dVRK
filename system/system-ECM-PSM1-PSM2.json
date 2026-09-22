@@ -1,0 +1,37 @@
+{
+    "$id": "dvrk-system.schema.json",
+    "$version": "1",
+    "IOs": [
+        {
+            "name": "IO1",
+            "port": "fw",
+            "protocol": "sequential-read-broadcast-write"
+        }
+    ],
+    "arms": [
+        {
+            "name": "PSM1",
+            "type": "PSM",
+            "serial": "30142",
+            "IO": "IO1",
+            "arm_file": "../arm/PSM1-30142.json",
+            "IO_file": "../io/sawRobotIO1394-PSM1-30142.json"
+        },
+        {
+            "name": "PSM2",
+            "type": "PSM",
+            "serial": "28084",
+            "IO": "IO1",
+            "arm_file": "../arm/PSM2-28084.json",
+            "IO_file": "../io/sawRobotIO1394-PSM2-28084.json"
+        },
+        {
+            "name": "ECM",
+            "type": "ECM",
+            "serial": "30811",
+            "IO": "IO1",
+            "arm_file": "../arm/ECM-30811.json",
+            "IO_file": "../io/sawRobotIO1394-ECM-30811.json"
+        }
+    ]
+}

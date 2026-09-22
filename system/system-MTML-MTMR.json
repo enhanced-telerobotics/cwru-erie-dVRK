@@ -1,0 +1,90 @@
+{
+    "$id": "dvrk-system.schema.json",
+    "$version": "1",
+    "IOs": [
+        {
+            "name": "IO1",
+            "port": "fw",
+            "protocol": "sequential-read-broadcast-write"
+        }
+    ],
+    "arms": [
+        {
+            "name": "MTMR",
+            "type": "MTM",
+            "serial": "30593",
+            "base_frame": {
+                "reference_frame": "HRSV",
+                "transform": [
+                    [
+                        -1.0,
+                        0.0,
+                        0.0,
+                        -0.18
+                    ],
+                    [
+                        0.0,
+                        0.866025404,
+                        0.5,
+                        0.4
+                    ],
+                    [
+                        0.0,
+                        0.5,
+                        -0.866025404,
+                        0.475
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            },
+            "IO": "IO1",
+            "arm_file": "../arm/MTMR-30593.json",
+            "PID_file": "../pid/sawControllersPID-MTMR-pot-feedback.json",
+            "IO_file": "../io/sawRobotIO1394-MTMR-30593.json",
+            "IO_gripper_file": "../io/sawRobotIO1394-MTMR-gripper-30593.json"
+        },
+        {
+            "name": "MTML",
+            "type": "MTM",
+            "serial": "64307",
+            "base_frame": {
+                "reference_frame": "HRSV",
+                "transform": [
+                    [
+                        -1.0,
+                        0.0,
+                        0.0,
+                        0.18
+                    ],
+                    [
+                        0.0,
+                        0.866025404,
+                        0.5,
+                        0.4
+                    ],
+                    [
+                        0.0,
+                        0.5,
+                        -0.866025404,
+                        0.475
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            },
+            "IO": "IO1",
+            "arm_file": "../arm/MTML-64307.json",
+            "IO_file": "../io/sawRobotIO1394-MTML-64307.json",
+            "IO_gripper_file": "../io/sawRobotIO1394-MTML-gripper-64307.json"
+        }
+    ]
+}

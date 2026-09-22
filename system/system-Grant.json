@@ -1,0 +1,21 @@
+{
+    "$id": "dvrk-system.schema.json",
+    "$version": "1",
+    "IOs": [
+        {
+            "name": "IO1",
+            "port": "fw",
+            "protocol": "sequential-read-broadcast-write"
+        }
+    ],
+    "arms": [
+        {
+            "name": "PSM2",
+            "type": "PSM",
+            "serial": "28084",
+            "IO": "IO1",
+            "arm_file": "../arm/PSM2-CADIERE_FORCEPS.json",
+            "IO_file": "../io/sawRobotIO1394-PSM2-28084.json"
+        }
+    ]
+}

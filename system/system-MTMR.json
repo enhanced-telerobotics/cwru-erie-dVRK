@@ -1,0 +1,23 @@
+{
+    "$id": "dvrk-system.schema.json",
+    "$version": "1",
+    "IOs": [
+        {
+            "name": "IO1",
+            "port": "fw",
+            "protocol": "sequential-read-broadcast-write"
+        }
+    ],
+    "arms": [
+        {
+            "name": "MTMR",
+            "type": "MTM",
+            "serial": "30593",
+            "IO": "IO1",
+            "arm_file": "../arm/MTMR-30593.json",
+            "PID_file": "../pid/sawControllersPID-MTMR-pot-feedback.json",
+            "IO_file": "../io/sawRobotIO1394-MTMR-30593.json",
+            "IO_gripper_file": "../io/sawRobotIO1394-MTMR-gripper-30593.json"
+        }
+    ]
+}
