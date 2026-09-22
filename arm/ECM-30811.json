@@ -1,11 +1,8 @@
 {
-    // see https://github.com/jhu-dvrk/sawIntuitiveResearchKit/wiki/Configuration-File-Formats
-    "kinematic": "kinematic/ecm.json"
-    , "generation": "Classic"
-    , "mounting-pitch": -0.785398 // -45.0 degrees
-    , "endoscope": "Classic_HD_STRAIGHT"
-    // , "endoscope": "SD_STRAIGHT"
-    // , "endoscope": "SD_UP"
-    // , "endoscope": "SD_DOWN"
-    // , "endoscope": "HD_STRAIGHT"
+    "$id": "dvrk-ecm.schema.json",
+    "$version": "1",
+    "kinematic": "kinematic/ECM.json",
+    "generation": "Classic",
+    "mounting_pitch": -0.785398,
+    "endoscope": "Classic_HD_STRAIGHT"
 }
