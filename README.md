@@ -222,6 +222,17 @@ corresponding measured-joint-state topic has an active publication rate:
 ros2 topic hz /PSM1/measured_js
 ```
 
+### Repeated TF_OLD_DATA warnings at time zero
+
+The full-system and patient-cart launches disable dVRK's Cartesian TF bridge
+with `-P 0` and use the model state publishers for TF. The bridge can broadcast
+invalid Cartesian measurements with zero timestamps, which RViz rejects after
+receiving newer transforms. Measurement topics remain available.
+
+Restart the launch after updating these files. When running `dvrk_system`
+manually alongside the model state publishers, also pass `-P 0`. A standalone
+`dvrk_system` without model publishers still needs its bridge to provide TF.
+
 ### RViz tool geometry does not match the installed tool
 
 Pass the correct instrument model. For example, the Si Large Needle Driver is

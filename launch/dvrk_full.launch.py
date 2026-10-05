@@ -49,7 +49,8 @@ def generate_launch_description():
         Node(
             package='dvrk_robot',
             executable='dvrk_system',
-            arguments=['-j', system_config],
+            # Model state publishers own TF; the bridge can emit zero-stamped invalid poses.
+            arguments=['-j', system_config, '-P', '0'],
             cwd=repository_root,
             output='screen',
         ),

@@ -79,7 +79,8 @@ def generate_launch_description():
         package = 'dvrk_robot',
         executable = 'dvrk_system',
         condition = UnlessCondition(simulated),
-        arguments = ['-j', system_config],
+        # Model state publishers own TF; the bridge can emit zero-stamped invalid poses.
+        arguments = ['-j', system_config, '-P', '0'],
         cwd=os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)),
         output = 'screen',
     )
