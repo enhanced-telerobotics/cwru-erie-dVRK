@@ -10,7 +10,8 @@
     [
         {
             "name": "IO1",
-            "port": "fw" // fw, udpfw or udp
+            "port": "fw", // fw, udpfw or udp
+            "protocol": "broadcast-query-read-write"
         }
     ]
     ,
