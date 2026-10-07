@@ -1,0 +1,18 @@
+{
+  "type": "dvrk_data:stereo_source@1.0.0",
+  "name": "dvrk_display_sdi",
+  "camera": {
+    "size": {
+      "width": 1920,
+      "height": 1080
+    },
+    "left": {
+      "gst_input": "v4l2src device=/dev/video2 do-timestamp=true ! video/x-raw,width=1920,height=1080 ! videoconvert",
+      "gst_output": "@dvrk:stereo_source:left"
+    },
+    "right": {
+      "gst_input": "v4l2src device=/dev/video0 do-timestamp=true ! video/x-raw,width=1920,height=1080 ! videoconvert",
+      "gst_output": "@dvrk:stereo_source:right"
+    }
+  }
+}

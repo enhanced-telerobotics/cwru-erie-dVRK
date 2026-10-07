@@ -1,0 +1,18 @@
+{
+  "type": "dvrk_data:stereo_source@1.0.0",
+  "name": "dvrk_display_sd",
+  "camera": {
+    "size": {
+      "width": 640,
+      "height": 480
+    },
+    "left": {
+      "gst_input": "v4l2src device=/dev/video4 do-timestamp=true ! video/x-raw,width=640,height=480,framerate=30000/1001 ! videoconvert",
+      "gst_output": "@dvrk:stereo_source:left"
+    },
+    "right": {
+      "gst_input": "v4l2src device=/dev/video5 do-timestamp=true ! video/x-raw,width=640,height=480,framerate=30000/1001 ! videoconvert",
+      "gst_output": "@dvrk:stereo_source:right"
+    }
+  }
+}
