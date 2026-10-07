@@ -1,0 +1,15 @@
+{
+  "type": "dvrk_console:stereo_display@1.0.0",
+  "name": "dvrk_display_sdi",
+  "dvrk_console_namespace": "console",
+  "sinks": [
+    "glimages"
+  ],
+  "gst_input": "unixfdsrc socket-path=dvrk:stereo_alignment:stereo socket-type=abstract do-timestamp=true ! video/x-raw,format=I420,width=3840,height=1080 ! videoscale ! video/x-raw,format=I420,width=2048,height=768,pixel-aspect-ratio=1/1",
+  "eye_size": {
+    "width": 1024,
+    "height": 768
+  },
+  "preserve_size": true,
+  "display_horizontal_offset_px": 16
+}
