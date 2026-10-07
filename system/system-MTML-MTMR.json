@@ -2,17 +2,14 @@
     // see https://dvrk.readthedocs.io
     "$id": "dvrk-system.schema.json",
     "$version": "1",
-    "IOs":
-    [
+    "IOs": [
         {
             "name": "IO1",
             "port": "fw", // fw, udpfw or udp
             "protocol": "broadcast-query-read-write"
         }
-    ]
-    ,
-    "arms":
-    [
+    ],
+    "arms": [
         {
             "name": "MTML",
             "type": "MTM",
@@ -20,9 +17,37 @@
             "arm_file": "../arm/MTML-39494.json",
             "IO_file": "../io/sawRobotIO1394-MTML-39494.json",
             "IO_gripper_file": "../io/sawRobotIO1394-MTML-gripper-39494.json",
-            "IO": "IO1" // defined in IOs
-        }
-	,
+            "IO": "IO1",
+            "base_frame": {
+                "reference_frame": "HRSV",
+                "transform": [
+                    [
+                        -1.0,
+                        0.0,
+                        0.0,
+                        0.180
+                    ],
+                    [
+                        0.0,
+                        0.866025404,
+                        0.5,
+                        0.400
+                    ],
+                    [
+                        0.0,
+                        0.5,
+                        -0.866025404,
+                        0.475
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            }
+        },
         {
             "name": "MTMR",
             "type": "MTM",
@@ -30,7 +55,50 @@
             "arm_file": "../arm/MTMR-56216.json",
             "IO_file": "../io/sawRobotIO1394-MTMR-56216.json",
             "IO_gripper_file": "../io/sawRobotIO1394-MTMR-gripper-56216.json",
-            "IO": "IO1" // defined in IOs
+            "IO": "IO1",
+            "base_frame": {
+                "reference_frame": "HRSV",
+                "transform": [
+                    [
+                        -1.0,
+                        0.0,
+                        0.0,
+                        -0.180
+                    ],
+                    [
+                        0.0,
+                        0.866025404,
+                        0.5,
+                        0.400
+                    ],
+                    [
+                        0.0,
+                        0.5,
+                        -0.866025404,
+                        0.475
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            }
+        }
+    ],
+    "consoles": [
+        {
+            "IO_head_sensor": {
+                "IO": "IO1",
+                "IO_file": "io/sawRobotIO1394-MTMR-dv-head-sensor.json"
+            },
+            "IO_pedals": {
+                "IO": "IO1",
+                "IO_file": "io/sawRobotIO1394-MTMR-foot-pedals-DQLA.json"
+            },
+            "input_type": "PEDALS_ISI_HEAD_SENSOR",
+            "name": "Console"
         }
     ]
 }
