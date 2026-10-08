@@ -148,7 +148,7 @@
                 "IO_file": "io/sawRobotIO1394-MTMR-foot-pedals-DQLA.json"
             },
             "input_type": "PEDALS_ISI_HEAD_SENSOR",
-            "name": "Console",
+            "name": "console",
             "teleop_PSMs": [
                 {
                     "MTM": "MTMR",
