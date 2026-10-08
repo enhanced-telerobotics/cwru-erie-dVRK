@@ -1,0 +1,38 @@
+{
+  "type": "dvrk_data:stereo_alignment@1.0.0",
+  "name": "dvrk_display_sd",
+  "camera": {
+    "size": {
+      "width": 640,
+      "height": 480
+    },
+    "left": {
+      "gst_input": "unixfdsrc socket-path=dvrk:stereo_source:left socket-type=abstract do-timestamp=true ! video/x-raw,format=I420,width=640,height=480",
+      "color": {
+        "brightness": 0.0,
+        "contrast": 1.0,
+        "saturation": 1.0,
+        "hue": 0.0
+      }
+    },
+    "right": {
+      "gst_input": "unixfdsrc socket-path=dvrk:stereo_source:right socket-type=abstract do-timestamp=true ! video/x-raw,format=I420,width=640,height=480",
+      "color": {
+        "brightness": 0.0,
+        "contrast": 1.0,
+        "saturation": 1.0,
+        "hue": 0.0
+      }
+    },
+    "alignment": {
+      "horizontal_shift_px": 0,
+      "vertical_shift_px": 0
+    },
+    "crop": {
+      "width": 640,
+      "height": 480
+    }
+  },
+  "preserve_size": true,
+  "gst_output": "@dvrk:stereo_alignment:stereo"
+}
