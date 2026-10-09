@@ -73,6 +73,68 @@ simulation mode. Do not run the patient-cart, surgeon-console, or individual-arm
 hardware launch at the same time, because each would start another
 `dvrk_system` process for the same hardware.
 
+## MTM teleoperation with PyBullet and HRSV
+
+Use the local physical MTML (39494), MTMR (56216), pedals, and ISI head sensor
+to teleoperate PyBullet patient arms and view the simulator in the HRSV:
+
+```bash
+ros2 launch launch/mtm_pybullet_hrsv.launch.py
+```
+
+Source the workspace containing `dvrk_pybullet`, `dvrk_arms_from_ros`,
+`dvrk_robot`, and `dvrk_console` first. The default `/home/erie_lab/Documents/envs/sim/bin/python` must have the
+PyBullet simulator requirements installed; select another interpreter with
+`pybullet_python:=/path/to/venv/bin/python3` if needed.
+
+The launch starts one `dvrk_system`, PyBullet, the control panel, and the HRSV
+display after four seconds. MTMR controls PSM1; MTML controls PSM2 or PSM3;
+both MTMs provide ECM teleoperation. Power, home, and enable teleoperation
+using the normal console procedure. Do not run another hardware launch alongside it.
+
+The system JSON is `system/system-MTML-MTMR-pybullet-Teleop.json`.
+Simulator settings live in `sim/pybullet_patient_cart.yaml`, and the vision JSON
+is `sim/stereo_display_hrsv_bullet.json`. PyBullet supplies stereo video directly
+over its simulator socket. The HRSV config scales it to 1024 × 768 per eye and
+uses your configured display offset of -46 pixels.
+
+Override `exercise`, `headless`, `pybullet_config`, `system_config`, or
+`display_config` as needed; `rqt:=true` enables the optional monitor.
+List all arguments with:
+
+```bash
+ros2 launch launch/mtm_pybullet_hrsv.launch.py --show-args
+```
+
+## MTM teleoperation with Newton and HRSV
+
+The Newton launch uses the same local MTMs, pedals, ISI head sensor, teleop
+mappings, and HRSV display settings as the PyBullet setup:
+
+```bash
+ros2 launch launch/mtm_newton_hrsv.launch.py
+```
+
+Source the workspace containing `dvrk_newton` and the same robot and console
+packages first. The default interpreter is
+`/home/erie_lab/Documents/envs/sim/bin/python`; it must have the Newton
+simulator requirements installed, including Newton and Warp. Select another
+interpreter with `newton_python:=/path/to/venv/bin/python3` if needed.
+
+Configuration files are `system/system-MTML-MTMR-newton-Teleop.json`,
+`sim/newton_patient_cart.yaml`, and `sim/stereo_display_hrsv_newton.json`.
+The runtime config follows the IROS Newton reference and defaults to `cuda:0`.
+The launch starts Newton, one `dvrk_system`, the control panel, and the HRSV
+video display after four seconds. Stop the PyBullet or other hardware launch
+before starting this one.
+
+Override `newton_config`, `newton_python`, `exercise`, `headless`,
+`system_config`, or `display_config` as needed; `rqt:=true` enables monitoring.
+
+```bash
+ros2 launch launch/mtm_newton_hrsv.launch.py --show-args
+```
+
 ## HRSV stereo video
 
 Start the SDI source, stereo alignment, and separate HRSV eye windows with:
