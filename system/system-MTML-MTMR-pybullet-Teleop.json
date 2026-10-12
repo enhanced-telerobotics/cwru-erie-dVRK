@@ -1,0 +1,188 @@
+{
+    "$id": "dvrk-system.schema.json",
+    "$version": "1",
+    "component_manager": {
+        "components": [
+            {
+                "shared-library": "dvrk_arm_from_ros",
+                "class-name": "dvrk_psm_from_ros",
+                "constructor-arg": {
+                    "Name": "PSM1",
+                    "Period": 0.01
+                }
+            },
+            {
+                "shared-library": "dvrk_arm_from_ros",
+                "class-name": "dvrk_psm_from_ros",
+                "constructor-arg": {
+                    "Name": "PSM2",
+                    "Period": 0.01
+                }
+            },
+            {
+                "shared-library": "dvrk_arm_from_ros",
+                "class-name": "dvrk_psm_from_ros",
+                "constructor-arg": {
+                    "Name": "PSM3",
+                    "Period": 0.01
+                }
+            },
+            {
+                "shared-library": "dvrk_arm_from_ros",
+                "class-name": "dvrk_arm_from_ros",
+                "constructor-arg": {
+                    "Name": "ECM",
+                    "Period": 0.01
+                }
+            }
+        ]
+    },
+    "IOs": [
+        {
+            "name": "IO1",
+            "port": "fw",
+            "protocol": "broadcast-query-read-write"
+        }
+    ],
+    "arms": [
+        {
+            "name": "MTML",
+            "type": "MTM",
+            "serial": "39494",
+            "arm_file": "../arm/MTML-39494.json",
+            "IO_file": "../io/sawRobotIO1394-MTML-39494.json",
+            "IO_gripper_file": "../io/sawRobotIO1394-MTML-gripper-39494.json",
+            "IO": "IO1",
+            "base_frame": {
+                "reference_frame": "HRSV",
+                "transform": [
+                    [
+                        -1.0,
+                        0.0,
+                        0.0,
+                        0.18
+                    ],
+                    [
+                        0.0,
+                        0.866025404,
+                        0.5,
+                        0.4
+                    ],
+                    [
+                        0.0,
+                        0.5,
+                        -0.866025404,
+                        0.475
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            }
+        },
+        {
+            "name": "MTMR",
+            "type": "MTM",
+            "serial": "56216",
+            "arm_file": "../arm/MTMR-56216.json",
+            "IO_file": "../io/sawRobotIO1394-MTMR-56216.json",
+            "IO_gripper_file": "../io/sawRobotIO1394-MTMR-gripper-56216.json",
+            "IO": "IO1",
+            "base_frame": {
+                "reference_frame": "HRSV",
+                "transform": [
+                    [
+                        -1.0,
+                        0.0,
+                        0.0,
+                        -0.18
+                    ],
+                    [
+                        0.0,
+                        0.866025404,
+                        0.5,
+                        0.4
+                    ],
+                    [
+                        0.0,
+                        0.5,
+                        -0.866025404,
+                        0.475
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            }
+        },
+        {
+            "name": "PSM1",
+            "type": "PSM_GENERIC",
+            "component": "PSM1",
+            "interface": "PSM1",
+            "skip_ROS_bridge": true
+        },
+        {
+            "name": "PSM2",
+            "type": "PSM_GENERIC",
+            "component": "PSM2",
+            "interface": "PSM2",
+            "skip_ROS_bridge": true
+        },
+        {
+            "name": "PSM3",
+            "type": "PSM_GENERIC",
+            "component": "PSM3",
+            "interface": "PSM3",
+            "skip_ROS_bridge": true
+        },
+        {
+            "name": "ECM",
+            "type": "ECM_GENERIC",
+            "component": "ECM",
+            "interface": "ECM",
+            "skip_ROS_bridge": true
+        }
+    ],
+    "consoles": [
+        {
+            "IO_head_sensor": {
+                "IO": "IO1",
+                "IO_file": "io/sawRobotIO1394-MTMR-dv-head-sensor.json"
+            },
+            "IO_pedals": {
+                "IO": "IO1",
+                "IO_file": "io/sawRobotIO1394-MTMR-foot-pedals-DQLA.json"
+            },
+            "input_type": "PEDALS_ISI_HEAD_SENSOR",
+            "name": "console",
+            "teleop_PSMs": [
+                {
+                    "MTM": "MTMR",
+                    "PSM": "PSM1"
+                },
+                {
+                    "MTM": "MTML",
+                    "PSM": "PSM2"
+                },
+                {
+                    "MTM": "MTML",
+                    "PSM": "PSM3"
+                }
+            ],
+            "teleop_ECMs": [
+                {
+                    "MTML": "MTML",
+                    "MTMR": "MTMR",
+                    "ECM": "ECM"
+                }
+            ]
+        }
+    ]
+}

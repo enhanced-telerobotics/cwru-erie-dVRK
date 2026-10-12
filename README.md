@@ -11,6 +11,9 @@ RViz, so a separate `dvrk_system` command is not needed.
 - `io/`: robot, gripper, and Si SUJ IO configurations and potentiometer lookup tables.
 - `system/`: system configurations with explicit relative paths to arm and IO files.
 - `cal/`: calibration source files.
+- `sdi/`: SDI capture, stereo alignment, and HRSV/OpenXR video configurations.
+- `sim/`: simulator runtime and video configurations.
+- `launch/`: ROS 2 launch files run directly by path.
 
 Si SUJ system configurations include `io/` in `settings.path` because dVRK
 locates SUJ IO files by name. The hardware launch files set the working directory
@@ -23,6 +26,11 @@ The SUJ arm configurations continue to use the upstream `kinematic/suj-si.json`.
 
 The examples assume ROS 2 Humble and the dVRK 2.5.0 workspace are installed at
 the paths used on the ERIE computer.
+
+Run these launches from a regular desktop terminal after sourcing your ROS 2
+and dVRK workspace. The OpenXR, PyBullet HRSV, Newton HRSV, and HRSV stereo
+video launches inherit your terminal environment; they do not clear or override
+GTK variables for Snap VS Code.
 
 In every new terminal, run:
 
@@ -72,6 +80,103 @@ This launch is intended for the real combined system and does not provide a
 simulation mode. Do not run the patient-cart, surgeon-console, or individual-arm
 hardware launch at the same time, because each would start another
 `dvrk_system` process for the same hardware.
+
+## MTM teleoperation with PyBullet and HRSV
+
+Use the local physical MTML (39494), MTMR (56216), pedals, and ISI head sensor
+to teleoperate PyBullet patient arms and view the simulator in the HRSV:
+
+```bash
+ros2 launch launch/mtm_pybullet_hrsv.launch.py
+```
+
+Source the workspace containing `dvrk_pybullet`, `dvrk_arms_from_ros`,
+`dvrk_robot`, and `dvrk_console` first. The default `/home/erie_lab/Documents/envs/sim/bin/python` must have the
+PyBullet simulator requirements installed; select another interpreter with
+`pybullet_python:=/path/to/venv/bin/python3` if needed.
+
+The launch starts one `dvrk_system`, PyBullet, the control panel, and the HRSV
+display after four seconds. MTMR controls PSM1; MTML controls PSM2 or PSM3;
+both MTMs provide ECM teleoperation. Power, home, and enable teleoperation
+using the normal console procedure. Do not run another hardware launch alongside it.
+
+The system JSON is `system/system-MTML-MTMR-pybullet-Teleop.json`.
+Simulator settings live in `sim/pybullet_patient_cart.yaml`, and the vision JSON
+is `sim/stereo_display_hrsv_bullet.json`. PyBullet supplies stereo video directly
+over its simulator socket. The HRSV config scales it to 1024 × 768 per eye and
+uses your configured display offset of -46 pixels.
+
+Override `exercise`, `headless`, `pybullet_config`, `system_config`, or
+`display_config` as needed; `rqt:=true` enables the optional monitor.
+List all arguments with:
+
+```bash
+ros2 launch launch/mtm_pybullet_hrsv.launch.py --show-args
+```
+
+## MTM teleoperation with Newton and HRSV
+
+The Newton launch uses the same local MTMs, pedals, ISI head sensor, teleop
+mappings, and HRSV display settings as the PyBullet setup:
+
+```bash
+ros2 launch launch/mtm_newton_hrsv.launch.py
+```
+
+Source the workspace containing `dvrk_newton` and the same robot and console
+packages first. The default interpreter is
+`/home/erie_lab/Documents/envs/sim/bin/python`; it must have the Newton
+simulator requirements installed, including Newton and Warp. Select another
+interpreter with `newton_python:=/path/to/venv/bin/python3` if needed.
+
+Configuration files are `system/system-MTML-MTMR-newton-Teleop.json`,
+`sim/newton_patient_cart.yaml`, and `sim/stereo_display_hrsv_newton.json`.
+The runtime config follows the IROS Newton reference and defaults to `cuda:0`.
+The launch starts Newton, one `dvrk_system`, the control panel, and the HRSV
+video display after four seconds. Stop the PyBullet or other hardware launch
+before starting this one.
+
+Override `newton_config`, `newton_python`, `exercise`, `headless`,
+`system_config`, or `display_config` as needed; `rqt:=true` enables monitoring.
+
+```bash
+ros2 launch launch/mtm_newton_hrsv.launch.py --show-args
+```
+
+## OpenXR teleoperation with SDI endoscope video
+
+Connect the Quest to WiVRn and select WiVRn as the active OpenXR runtime, then
+run the local real patient cart with OpenXR controllers and SDI stereo video:
+
+```bash
+ros2 launch launch/openxr_dvrk_si.launch.py
+```
+
+Source the workspace containing `saw_openxr`, `dvrk_robot`, `dvrk_data`, and
+`dvrk_console` first. This starts SDI capture, stereo alignment, the OpenXR
+video overlay, then one `dvrk_system` and the control panel, using pipeline
+readiness messages to order startup. If capture, alignment, the video overlay,
+or `dvrk_system` exits, the launch shuts down its remaining processes.
+
+The system uses the local SUJ, ECM (344539), PSM1 (276682), and PSM2 (360087)
+configurations over FireWire. The OpenXR right controller (MTMR) controls PSM1;
+the left controller (MTML) controls PSM2, with individual controller clutch
+inputs and PSM teleoperation scale 0.2. Both controllers also control the ECM.
+Hold both thumbsticks down (toward you) to engage camera teleoperation; release
+them to leave camera mode. Camera mode suspends PSM teleoperation. ECM teleop
+disables haptic feedback and physical MTM workspace checks for Quest controllers.
+
+The robot system and OpenXR video configs are in `system/system-OpenXR-SUJ-ECM-PSM1-PSM2-Teleop.json` and
+`sdi/sawOpenXR-sdi-unixfd.json`. Video uses the existing
+`sdi/stereo_source_hd.json` and `sdi/stereo_alignment_hd.json`, plus
+`sdi/stereo_display_openxr_hd.json`. Capture defaults to DeckLink inputs 0/1
+at 1080i59.94. The aligned stereo overlay is sent to OpenXR through
+`@dvrk:console:stereo_overlay`.
+
+Override `system_config`, `source_config`, `alignment_config`, or
+`display_config` with an absolute JSON path as needed. Power, home, and enable
+teleoperation through the normal console procedure. Stop other hardware or SDI
+launches before running this one.
 
 ## HRSV stereo video
 
@@ -307,6 +412,7 @@ ros2 launch launch/dvrk_bringup.launch.py --show-args
 ros2 launch launch/patient_cart.launch.py --show-args
 ros2 launch launch/surgeon_console.launch.py --show-args
 ros2 launch launch/dvrk_full.launch.py --show-args
+ros2 launch launch/openxr_dvrk_si.launch.py --show-args
 ```
 
 Stop a launch and its child processes with `Ctrl+C` in the terminal that
