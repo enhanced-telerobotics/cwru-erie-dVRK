@@ -143,6 +143,43 @@ Override `newton_config`, `newton_python`, `exercise`, `headless`,
 ros2 launch launch/mtm_newton_hrsv.launch.py --show-args
 ```
 
+## OpenXR teleoperation with PyBullet
+
+Connect your Quest through WiVRn, select WiVRn as the active OpenXR runtime,
+and launch from a regular desktop terminal with your dVRK workspace sourced:
+
+```bash
+ros2 launch launch/openxr_pybullet.launch.py
+```
+
+This starts PyBullet, the stereo video overlay, one `dvrk_system`, and the
+control panel. The overlay starts after four seconds; the robot system starts
+when the overlay reports its pipeline is running. If the simulator, overlay,
+or robot system exits, the remaining processes shut down.
+
+All patient arms are simulated; this system has no hardware IO or physical
+MTMs. The right Quest controller controls PSM1; the left controls either PSM2
+or PSM3, initially PSM2, with scale 0.2. Quickly press and release either
+thumbstick button within 0.5 seconds to switch the left controller between
+PSM2 and PSM3. Two PSMs can be controlled at a time; the unselected arm holds
+its position. Push a controller's thumbstick up to release its PSM clutch.
+Hold both thumbsticks down to control the ECM with both controllers; release
+them to leave camera mode. Power, home, and enable teleoperation for the
+simulated arms using the control panel.
+
+The system config is `system/system-OpenXR-pybullet-Teleop.json`. Video configs
+are `sim/sawOpenXR-pybullet-unixfd.json` and
+`sim/stereo_display_openxr_bullet.json`; simulator settings reuse
+`sim/pybullet_patient_cart.yaml`. The scene includes ECM and all three PSMs.
+
+The default interpreter is `/home/erie_lab/Documents/envs/sim/bin/python`.
+Override `pybullet_python`, `pybullet_config`, `exercise`, `headless`,
+`system_config`, or `display_config` as needed; `rqt:=true` enables monitoring.
+
+```bash
+ros2 launch launch/openxr_pybullet.launch.py --show-args
+```
+
 ## OpenXR teleoperation with SDI endoscope video
 
 Connect the Quest to WiVRn and select WiVRn as the active OpenXR runtime, then
