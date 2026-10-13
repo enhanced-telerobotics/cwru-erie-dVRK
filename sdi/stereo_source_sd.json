@@ -7,11 +7,11 @@
       "height": 480
     },
     "left": {
-      "gst_input": "v4l2src device=/dev/video4 do-timestamp=true ! video/x-raw,width=640,height=480,framerate=30000/1001 ! videoconvert",
+      "gst_input": "v4l2src device=/dev/video4 do-timestamp=true ! video/x-raw,width=640,height=480,framerate=30000/1001 ! videoconvert ! deinterlace fields=top",
       "gst_output": "@dvrk:stereo_source:left"
     },
     "right": {
-      "gst_input": "v4l2src device=/dev/video5 do-timestamp=true ! video/x-raw,width=640,height=480,framerate=30000/1001 ! videoconvert",
+      "gst_input": "v4l2src device=/dev/video5 do-timestamp=true ! video/x-raw,width=640,height=480,framerate=30000/1001 ! videoconvert ! deinterlace fields=top",
       "gst_output": "@dvrk:stereo_source:right"
     }
   }
