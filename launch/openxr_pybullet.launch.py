@@ -29,6 +29,7 @@ def generate_launch_description():
             "--config", LaunchConfiguration("pybullet_config"),
             "--scene", "ECM_PSM1_PSM2_PSM3.yaml",
             "--scene", str(repository_root / "sim" / "patient_cart_view.yaml"),
+            "--scene", str(repository_root / "sim" / "openxr_camera.yaml"),
             "--scene", LaunchConfiguration("exercise"),
             "--headless", LaunchConfiguration("headless"),
         ],
