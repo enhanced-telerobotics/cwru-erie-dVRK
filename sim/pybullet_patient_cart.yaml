@@ -1,3 +1,4 @@
+# Initial ECM pose and camera framing: patient_cart_view.yaml (loaded by launch).
 renderer: egl
 headless: true
 command_queue_capacity: 32

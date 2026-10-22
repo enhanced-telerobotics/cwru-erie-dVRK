@@ -27,6 +27,7 @@ def generate_launch_description():
             str(newton_share / "scripts" / "simulator.py"),
             "--config", LaunchConfiguration("newton_config"),
             "--scene", "ECM_PSM1_PSM2_PSM3.yaml",
+            "--scene", str(repository_root / "sim" / "patient_cart_view.yaml"),
             "--scene", LaunchConfiguration("exercise"),
             "--headless", LaunchConfiguration("headless"),
         ],
