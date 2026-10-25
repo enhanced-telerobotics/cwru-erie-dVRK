@@ -101,3 +101,23 @@ Override `pybullet_python`, `pybullet_config`, `exercise`, `headless`,
 ```bash
 ros2 launch launch/openxr_pybullet.launch.py --show-args
 ```
+
+The virtual monitor stays fixed in the room by default (`head_lock:=false`).
+To keep it in front of your head while moving or turning:
+
+```bash
+ros2 launch launch/openxr_pybullet.launch.py head_lock:=true
+```
+
+This option changes the rendered monitor pose only; the controller reference
+frame keeps its existing behavior. It requires the rebuilt `saw_openxr` runtime
+with `SAW_OPENXR_HEAD_LOCK` support. The launch sets that environment variable
+only for `dvrk_system`.
+
+OpenXR renders the simulator camera at **1600 × 1200 per eye** (3200 × 1200
+side-by-side) using `sim/openxr_camera.yaml`, loaded after the shared patient-cart
+view and before the exercise. This preserves the 4:3 framing and 60-degree
+horizontal field of view. The stereo display preserves the source resolution;
+OpenXR still uses the runtime-recommended headset swapchain resolution. HRSV
+launches keep their existing camera settings. An exercise can override these
+camera settings because it is loaded last.

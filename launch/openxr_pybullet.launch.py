@@ -42,6 +42,7 @@ def generate_launch_description():
         output="screen",
         cwd=str(repository_root),
         arguments=["-j", LaunchConfiguration("system_config")],
+        additional_env={"SAW_OPENXR_HEAD_LOCK": LaunchConfiguration("head_lock")},
     )
     stereo_display = Node(
         package="dvrk_console",
@@ -114,6 +115,11 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "exercise", default_value="tray_cubes.yaml",
             description="Exercise scene YAML path or installed exercise filename.",
+        ),
+        DeclareLaunchArgument(
+            "head_lock", default_value="false",
+            description="Keep the virtual monitor in front of the user's head (display only).",
+            choices=["true", "false"],
         ),
         DeclareLaunchArgument(
             "headless", default_value="true",
