@@ -38,6 +38,30 @@ starts.
 Do not start another `dvrk_system` process while one of these launch files is
 running. Two processes must not attempt to access the same hardware.
 
+## Local MTMs with remote ROS arms and HRSV video
+
+After sourcing the dVRK and `dvrk_magewell` workspaces, run:
+
+```bash
+ros2 launch launch/dvrk_ros.launch.py
+```
+
+This starts local MTML/MTMR hardware, head sensor, and pedals using
+`system/system-MTML-MTMR-ECM-PSM1-PSM2-from-ROS-Teleop.json`. MTMR controls
+remote PSM1, MTML controls remote PSM2, and the camera pedal selects ECM control.
+The remote patient cart must already be running in the same ROS domain, with
+no other active teleoperation controller commanding those arms.
+
+HRSV displays `/stereo_source/left/camera/image_raw/compressed` and
+`/stereo_source/right/camera/image_raw/compressed` through
+`dvrk_magewell/display_video`, using the HD display geometry from its
+`show_hrsv.launch.py`. The display subscribes to images only; camera-info topics
+are not required. No local video capture is started.
+
+Override `left_image_topic` and `right_image_topic` with base image topics
+(without `/compressed`), or use `image_transport:=raw` for raw images.
+Use `ros2 launch launch/dvrk_ros.launch.py --show-args` for all options.
+
 ## Full dVRK system
 
 Use `launch/dvrk_full.launch.py` to start the complete real system for

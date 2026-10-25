@@ -1,0 +1,55 @@
+{
+  "$id": "dvrk-system.schema.json",
+  "$version": "1",
+  "component_manager": {
+    "components": [
+      {
+        "shared-library": "dvrk_arm_from_ros",
+        "class-name": "dvrk_arm_from_ros",
+        "constructor-arg": {
+          "Name": "ECM",
+          "Period": 0.01
+        }
+      },
+      {
+        "shared-library": "dvrk_arm_from_ros",
+        "class-name": "dvrk_psm_from_ros",
+        "constructor-arg": {
+          "Name": "PSM1",
+          "Period": 0.01
+        }
+      },
+      {
+        "shared-library": "dvrk_arm_from_ros",
+        "class-name": "dvrk_psm_from_ros",
+        "constructor-arg": {
+          "Name": "PSM2",
+          "Period": 0.01
+        }
+      }
+    ]
+  },
+  "arms": [
+    {
+      "name": "ECM",
+      "type": "ECM_GENERIC",
+      "component": "ECM",
+      "interface": "ECM",
+      "skip_ROS_bridge": true
+    },
+    {
+      "name": "PSM1",
+      "type": "PSM_GENERIC",
+      "component": "PSM1",
+      "interface": "PSM1",
+      "skip_ROS_bridge": true
+    },
+    {
+      "name": "PSM2",
+      "type": "PSM_GENERIC",
+      "component": "PSM2",
+      "interface": "PSM2",
+      "skip_ROS_bridge": true
+    }
+  ]
+}
