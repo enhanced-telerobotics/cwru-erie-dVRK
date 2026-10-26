@@ -12,8 +12,7 @@ cd /home/erie_lab/cwru-erie-dVRK
 ```
 
 Choose a launch below. Each robot launch starts its own `dvrk_system`; run only
-one at a time. Hardware modes are the default for the real-robot and RViz
-launches. Check the emergency stop, connections, instruments, and robot
+one at a time. The real-robot and RViz launches always use real hardware. Check the emergency stop, connections, instruments, and robot
 workspace before starting hardware. Power, home, and enable teleoperation
 through the normal console procedure. Stop with `Ctrl+C`.
 
@@ -85,3 +84,12 @@ ros2 launch launch/dvrk_full.launch.py panel:=both
 
 Source the workspace containing `dvrk_utils` before using `web` or `both`.
 The web panel uses `/home/erie_lab/Documents/envs/torch/bin/python`.
+
+RViz launches (`dvrk_full`, `patient_cart`, `surgeon_console`, `dvrk_bringup`,
+and `arm`) default to `use_rviz:=false`: only the robot and any explicitly
+selected panels run, using `dvrk_robot`'s default TF publishing. Add
+`use_rviz:=true` to start RViz and model state publishers; robot TF publishing
+is disabled in that mode to avoid duplicate TF trees.
+
+Hardware/RViz launches use real time and no longer accept `simulated` or
+`use_sim_time` switches. PyBullet and Newton launches remain separate.
