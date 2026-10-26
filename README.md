@@ -27,6 +27,7 @@ All filenames below are under `launch/`. Run them as
 | Quest → PyBullet, headset video | `openxr_pybullet.launch.py` | [Simulation](docs/simulation.md#openxr-teleoperation-with-pybullet) |
 | Physical MTMs → PyBullet, HRSV | `mtm_pybullet_hrsv.launch.py` | [Simulation](docs/simulation.md#mtm-teleoperation-with-pybullet-and-hrsv) |
 | Physical MTMs → Newton, HRSV | `mtm_newton_hrsv.launch.py` | [Simulation](docs/simulation.md#mtm-teleoperation-with-newton-and-hrsv) |
+| Local MTMs → remote ROS arms, HRSV | `dvrk_ros.launch.py` | [ROS teleoperation](docs/hardware.md#local-mtms-with-remote-ros-arms-and-hrsv-video) |
 | Full real robot + MTMs, RViz | `dvrk_full.launch.py` | [Hardware](docs/hardware.md#full-dvrk-system) |
 | Patient cart, RViz | `patient_cart.launch.py` | [Hardware](docs/hardware.md#patient-cart-bringup) |
 | Surgeon console, RViz | `surgeon_console.launch.py` | [Hardware](docs/hardware.md#surgeon-console-bringup) |
