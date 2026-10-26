@@ -85,18 +85,6 @@ def launch_setup(context, *args, **kwargs):
         executable="stereo_display",
         name="stereo_display",
         output="screen",
-        # Snap VS Code exports GTK module paths linked against Snap's libc.
-        # Use host GTK modules while retaining the ROS workspace library paths.
-        additional_env={
-            key: ""
-            for key in (
-                "GTK_PATH", "GTK_EXE_PREFIX", "GTK_MODULES",
-                "GTK_IM_MODULE_FILE", "GDK_PIXBUF_MODULE_FILE",
-                "GDK_PIXBUF_MODULEDIR", "GIO_MODULE_DIR",
-            )
-            if "snap/" in os.environ.get(key, "")
-            or "/snap/" in os.environ.get("GTK_PATH", "")
-        },
         arguments=["-c", display_config_path],
     )
 

@@ -1,5 +1,6 @@
 """Bring up the complete real dVRK system and both RViz views."""
 
+from pathlib import Path
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -34,6 +35,17 @@ def generate_launch_description():
     )
 
     actions = [
+        DeclareLaunchArgument(
+            'panel', default_value='none',
+            choices=['none', 'screen', 'web', 'both'],
+            description='Control panel: none, desktop screen, browser web, or both.',
+        ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(str(
+                Path(__file__).resolve().parent / 'control_panel.launch.py'
+            )),
+            launch_arguments={'panel': LaunchConfiguration('panel')}.items(),
+        ),
         DeclareLaunchArgument(
             'system_config',
             default_value=TextSubstitution(text=os.path.join(

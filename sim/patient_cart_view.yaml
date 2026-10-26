@@ -1,0 +1,11 @@
+scene:
+  frames:
+    ECM:
+      # Retract the camera 50 mm along its viewing axis to frame all three PSMs.
+      position: [0.0, 0.1767766952966369, 0.1767766952966369]
+      orientation_xyzw: [-0.3826834323650897, 0.0, 0.0, 0.9238795325112867]
+  camera:
+    # Match the Newton reference's 4:3 view and the HRSV eye aspect ratio.
+    width: 800
+    height: 600
+    horizontal_fov_deg: 60.0
