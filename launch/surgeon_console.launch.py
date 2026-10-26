@@ -1,10 +1,14 @@
+from launch.actions import OpaqueFunction
+from pathlib import Path
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 import os
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.actions import DeclareLaunchArgument
-from launch.conditions import IfCondition, UnlessCondition
+from launch.conditions import IfCondition
 from launch import LaunchContext, LaunchDescription, Substitution
 from typing import Text
 
@@ -18,9 +22,8 @@ from launch.substitutions import (
 )
 
 def generate_launch_description():
-    simulated = LaunchConfiguration('simulated', default = 'false')
     system_config = LaunchConfiguration('system_config')
-    use_sim_time = LaunchConfiguration('use_sim_time', default = 'false')
+    use_sim_time = False
     rate = LaunchConfiguration('rate', default = 50.0)  # Hz, default is 10 so we're increasing that a bit.  Funny enough joint and robot state publishers don't have the same name for that parameter :-(
 
     repository_root = os.path.abspath(
@@ -29,9 +32,19 @@ def generate_launch_description():
 
     ld = LaunchDescription([
         DeclareLaunchArgument(
-            'simulated',
-            default_value='false',
-            description='Use kinematic simulation instead of real hardware'
+            'use_rviz', default_value='false', choices=['true', 'false'],
+            description='Start RViz and model TF publishers instead of the robot TF tree.',
+        ),
+        DeclareLaunchArgument(
+            'panel', default_value='none',
+            choices=['none', 'screen', 'web', 'both'],
+            description='Control panel: none, desktop screen, browser web, or both.',
+        ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(str(
+                Path(__file__).resolve().parent / 'control_panel.launch.py'
+            )),
+            launch_arguments={'panel': LaunchConfiguration('panel')}.items(),
         ),
         DeclareLaunchArgument(
             'system_config',
@@ -42,31 +55,23 @@ def generate_launch_description():
             )),
             description='dvrk_system JSON file for the real surgeon console'
         ),
-        DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('rate', default_value='50.0'),
     ])
 
     # dVRK system
-    system_json = [
-        PathJoinSubstitution([FindPackageShare('dvrk_config'),
-                              '/system/system-surgeon-console-simulated.json'])
-    ]
-    simulated_dvrk_node = Node(
-        package = 'dvrk_robot',
-        executable = 'dvrk_system',
-        condition = IfCondition(simulated),
-        arguments = ['-j', system_json],
-        output = 'both',
-    )
-    real_dvrk_node = Node(
-        package = 'dvrk_robot',
-        executable = 'dvrk_system',
-        condition = UnlessCondition(simulated),
-        arguments = ['-j', system_config],
-        cwd=repository_root,
-        output = 'screen',
-    )
-    ld.add_action(simulated_dvrk_node)
+    real_dvrk_node = OpaqueFunction(function=lambda context: [
+        Node(
+            package = 'dvrk_robot',
+            executable = 'dvrk_system',
+            arguments = ['-j', system_config] + (
+                ['-P', '0']
+                if IfCondition(LaunchConfiguration('use_rviz')).evaluate(context)
+                else []
+            ),
+            cwd=repository_root,
+            output = 'screen',
+        )
+    ])
     ld.add_action(real_dvrk_node)
 
     # Arm joint/robot state publishers
@@ -85,6 +90,7 @@ def generate_launch_description():
             value_type = str,
         )
         joint_state_publisher_node = Node(
+            condition=IfCondition(LaunchConfiguration('use_rviz')),
             package = 'joint_state_publisher',
             namespace = arm,
             executable = 'joint_state_publisher',
@@ -95,6 +101,7 @@ def generate_launch_description():
             output = 'both',
         )
         robot_state_publisher_node = Node(
+            condition=IfCondition(LaunchConfiguration('use_rviz')),
             package = 'robot_state_publisher',
             namespace = arm,
             executable = 'robot_state_publisher',
@@ -113,6 +120,7 @@ def generate_launch_description():
                               'rviz/Classic/surgeon-console.rviz'])
     ]
     rviz_node = Node(
+        condition=IfCondition(LaunchConfiguration('use_rviz')),
         package = 'rviz2',
         executable = 'rviz2',
         name = 'rviz2_surgeon_console',

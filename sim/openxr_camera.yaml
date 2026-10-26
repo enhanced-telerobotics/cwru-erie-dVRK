@@ -1,0 +1,5 @@
+# OpenXR source resolution, per eye. Keep the shared HRSV view at 800x600.
+scene:
+  camera:
+    width: 1600
+    height: 1200

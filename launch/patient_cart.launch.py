@@ -1,3 +1,5 @@
+from launch.actions import OpaqueFunction
+from pathlib import Path
 import os
 from ament_index_python.packages import get_package_share_directory
 
@@ -8,7 +10,6 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.conditions import IfCondition
-from launch.conditions import UnlessCondition
 from launch import LaunchContext, LaunchDescription, Substitution
 from typing import Text
 
@@ -23,24 +24,32 @@ from launch.substitutions import (
 
 def generate_launch_description():
     generation = LaunchConfiguration('generation')
-    simulated = LaunchConfiguration('simulated', default = 'false')
     system_config = LaunchConfiguration('system_config')
-    use_sim_time = LaunchConfiguration('use_sim_time', default = 'false')
+    use_sim_time = False
     show_rcm = LaunchConfiguration('show_rcm', default = 'true')
     rate = LaunchConfiguration('rate', default = 50.0)  # Hz, default is 10 so we're increasing that a bit.  Funny enough joint and robot state publishers don't have the same name for that parameter :-(
-    virtual_generation = PythonExpression(["'", generation, "' == 'Virtual'"])
 
     ld = LaunchDescription([
+        DeclareLaunchArgument(
+            'use_rviz', default_value='false', choices=['true', 'false'],
+            description='Start RViz and model TF publishers instead of the robot TF tree.',
+        ),
+        DeclareLaunchArgument(
+            'panel', default_value='none',
+            choices=['none', 'screen', 'web', 'both'],
+            description='Control panel: none, desktop screen, browser web, or both.',
+        ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(str(
+                Path(__file__).resolve().parent / 'control_panel.launch.py'
+            )),
+            launch_arguments={'panel': LaunchConfiguration('panel')}.items(),
+        ),
         DeclareLaunchArgument(
             'generation',
             default_value='Si',
             choices=['Classic', 'Si', 'Virtual'],
             description='dVRK system generation'
-        ),
-        DeclareLaunchArgument(
-            'simulated',
-            default_value='false',
-            description='Use kinematic simulation instead of real hardware'
         ),
         DeclareLaunchArgument(
             'system_config',
@@ -54,37 +63,25 @@ def generate_launch_description():
             )),
             description='dvrk_system JSON file for the real patient cart'
         ),
-        DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('show_rcm', default_value='true'),
         DeclareLaunchArgument('rate', default_value='50.0'),
     ])
 
 
     # dVRK system
-    system_json = [
-        PathJoinSubstitution([FindPackageShare('dvrk_config'),
-                              'system', '']),
-        '/system-patient-cart-',
-        generation,
-        '-simulated.json'
-    ]
-    simulated_dvrk_node = Node(
-        package = 'dvrk_robot',
-        executable = 'dvrk_system',
-        condition = IfCondition(simulated),
-        arguments = ['-j', system_json],
-        output = 'both',
-    )
-    real_dvrk_node = Node(
-        package = 'dvrk_robot',
-        executable = 'dvrk_system',
-        condition = UnlessCondition(simulated),
-        # Model state publishers own TF; the bridge can emit zero-stamped invalid poses.
-        arguments = ['-j', system_config, '-P', '0'],
-        cwd=os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)),
-        output = 'screen',
-    )
-    ld.add_action(simulated_dvrk_node)
+    real_dvrk_node = OpaqueFunction(function=lambda context: [
+        Node(
+            package = 'dvrk_robot',
+            executable = 'dvrk_system',
+            arguments = ['-j', system_config] + (
+                ['-P', '0']
+                if IfCondition(LaunchConfiguration('use_rviz')).evaluate(context)
+                else []
+            ),
+            cwd=os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)),
+            output = 'screen',
+        )
+    ])
     ld.add_action(real_dvrk_node)
 
 
@@ -107,7 +104,7 @@ def generate_launch_description():
         namespace = 'SUJ',
         executable = 'joint_state_publisher',
         name = 'SUJ_joint_state_publisher',
-        condition = UnlessCondition(virtual_generation),
+        condition = IfCondition(PythonExpression(["'", LaunchConfiguration('use_rviz'), "' == 'true' and '", generation, "' != 'Virtual'"])),
         parameters = [{'use_sim_time': use_sim_time,
                        'source_list': ['/SUJ/PSM1/measured_js',
                                        '/SUJ/PSM2/measured_js',
@@ -120,7 +117,7 @@ def generate_launch_description():
         namespace = 'SUJ',
         executable = 'robot_state_publisher',
         name = 'SUJ_robot_state_publisher',
-        condition = UnlessCondition(virtual_generation),
+        condition = IfCondition(PythonExpression(["'", LaunchConfiguration('use_rviz'), "' == 'true' and '", generation, "' != 'Virtual'"])),
         parameters = [{'use_sim_time': use_sim_time,
                        'robot_description': description,
                        'publish_frequency': rate}],
@@ -133,7 +130,8 @@ def generate_launch_description():
     # Arm joint/robot state publishers
     for arm in ['ECM', 'PSM1', 'PSM2']:
         publisher_nodes = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
+            condition=IfCondition(LaunchConfiguration('use_rviz')),
+            launch_description_source=PythonLaunchDescriptionSource(
                 os.path.join(
                     get_package_share_directory('dvrk_model'),
                     'launch',
@@ -141,7 +139,7 @@ def generate_launch_description():
             launch_arguments = {
                 'arm': arm,
                 'generation': generation,
-                'use_sim_time': use_sim_time,
+                'use_sim_time': 'false',
                 'rate': rate,
                 'suj': 'true',
                 'show_rcm': show_rcm
@@ -156,6 +154,7 @@ def generate_launch_description():
         '/patient_cart.rviz'
     ]
     rviz_node = Node(
+        condition=IfCondition(LaunchConfiguration('use_rviz')),
         package = 'rviz2',
         executable = 'rviz2',
         name = 'rviz2_patient_cart',
