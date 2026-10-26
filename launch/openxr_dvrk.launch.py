@@ -1,5 +1,7 @@
 """Show SD or HD stereo video in OpenXR alongside the Classic patient cart, without teleoperation."""
 
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from pathlib import Path
 
 from launch import LaunchDescription
@@ -60,11 +62,11 @@ def launch_setup(context):
         cwd=str(repository_root),
         arguments=["-j", str(system_config)],
     )
-    control_panel = Node(
-        package="dvrk_console",
-        executable="control_panel",
-        name="control_panel",
-        output="screen",
+    control_panel = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(str(
+            Path(__file__).resolve().parent / 'control_panel.launch.py'
+        )),
+        launch_arguments={'panel': LaunchConfiguration('panel')}.items(),
     )
 
     started = {
@@ -150,6 +152,11 @@ def launch_setup(context):
 def generate_launch_description():
     repository_root = Path(__file__).resolve().parent.parent
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'panel', default_value='none',
+            choices=['none', 'screen', 'web', 'both'],
+            description='Control panel: none, desktop screen, browser web, or both.',
+        ),
         DeclareLaunchArgument(
             "device", default_value="HD", choices=["SD", "HD"],
             description="Select SD (640x480) or HD (1920x1080) USB capture configs.",

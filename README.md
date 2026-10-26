@@ -200,3 +200,20 @@ Adjust `display_horizontal_offset_px` in the selected OpenXR display JSON,
 then restart the launch to inspect the result. The installed display node has
 no live offset control; `stereo_display_calibration` previews only on desktop.
 Omit `grid:=true` for normal viewing.
+
+RViz launches (`dvrk_full`, `patient_cart`, `surgeon_console`, `dvrk_bringup`,
+and `arm`) default to `use_rviz:=false`: only the robot and any explicitly
+selected panels run, using `dvrk_robot`'s default TF publishing. Add
+`use_rviz:=true` to start RViz and model state publishers; robot TF publishing
+is disabled in that mode to avoid duplicate TF trees.
+
+## Panel and visualization options
+
+Robot launches accept `panel:=none|screen|web|both` (default `none`).
+The web panel uses `/home/erie_lab/Documents/envs/torch_stable/bin/python`; source
+the workspace containing `dvrk_utils` before selecting `web` or `both`.
+
+Hardware/RViz launches always use real hardware and wall-clock time; the
+`simulated` and `use_sim_time` switches have been removed. RViz and model state
+publishers require `use_rviz:=true` (default `false`). With RViz disabled,
+`dvrk_robot` provides its default TF tree.

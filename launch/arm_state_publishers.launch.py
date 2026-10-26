@@ -8,7 +8,7 @@ from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterValue
 import launch_ros.descriptions
 from launch.actions import DeclareLaunchArgument, OpaqueFunction, SetLaunchConfiguration
-from launch.conditions import IfCondition, UnlessCondition
+from launch.conditions import IfCondition
 from launch import LaunchContext, LaunchDescription, Substitution
 from typing import Text
 import xacro
@@ -176,7 +176,7 @@ def generate_launch_description():
     instrument = LaunchConfiguration('instrument', default='')
     endoscope = LaunchConfiguration('endoscope', default='')
     direct_control = LaunchConfiguration('direct_control', default='false')
-    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    use_sim_time = False
     suj = LaunchConfiguration('suj', default='false')
     rate = LaunchConfiguration('rate', default = 50.0)  # Hz, default is 10 so we're increasing that a bit.
 
@@ -242,7 +242,6 @@ def generate_launch_description():
             default_value='false',
             description='Use joint_state_publisher_gui for manual joint control instead of mirroring incoming joint-state topics'
         ),
-        DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('suj', default_value='false'),
         DeclareLaunchArgument('rate', default_value='50.0'),
         DeclareLaunchArgument('show_rcm', default_value='true'),
