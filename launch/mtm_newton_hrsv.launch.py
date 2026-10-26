@@ -1,5 +1,7 @@
 """Run physical MTMs and pedals with the Newton virtual patient cart and HRSV."""
 
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
@@ -48,11 +50,11 @@ def generate_launch_description():
         output="screen",
         arguments=["-c", LaunchConfiguration("display_config")],
     )
-    control_panel = Node(
-        package="dvrk_console",
-        executable="control_panel",
-        name="control_panel",
-        output="screen",
+    control_panel = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(str(
+            Path(__file__).resolve().parent / 'control_panel.launch.py'
+        )),
+        launch_arguments={'panel': LaunchConfiguration('panel')}.items(),
     )
     rqt_monitor = ExecuteProcess(
         cmd=["rqt"],
@@ -78,6 +80,11 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'panel', default_value='none',
+            choices=['none', 'screen', 'web', 'both'],
+            description='Control panel: none, desktop screen, browser web, or both.',
+        ),
         DeclareLaunchArgument(
             "system_config", default_value=str(system_config),
             description="dVRK system JSON for local physical MTMs and simulated patient arms.",

@@ -1,5 +1,7 @@
 """Run physical PSM1/PSM2 from sawOpenXR with SDI endoscope stereo video."""
 
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from pathlib import Path
 
 from launch import LaunchDescription
@@ -46,13 +48,12 @@ def generate_launch_description():
         cwd=str(repository_root),
         arguments=["-j", LaunchConfiguration("system_config")],
     )
-    control_panel = Node(
-        package="dvrk_console",
-        executable="control_panel",
-        name="control_panel",
-        output="screen",
+    control_panel = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(str(
+            Path(__file__).resolve().parent / 'control_panel.launch.py'
+        )),
+        launch_arguments={'panel': LaunchConfiguration('panel')}.items(),
     )
-
     started = {
         "stereo_alignment": False,
         "stereo_display": False,
@@ -124,6 +125,11 @@ def generate_launch_description():
     ]
 
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'panel', default_value='none',
+            choices=['none', 'screen', 'web', 'both'],
+            description='Control panel: none, desktop screen, browser web, or both.',
+        ),
         DeclareLaunchArgument("system_config", default_value=str(system_config),
                               description="Local OpenXR and physical patient-cart system JSON."),
         DeclareLaunchArgument("source_config", default_value=str(source_config),

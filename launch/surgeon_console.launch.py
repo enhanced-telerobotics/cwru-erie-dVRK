@@ -1,3 +1,6 @@
+from pathlib import Path
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 import os
 
 from launch_ros.actions import Node
@@ -28,6 +31,17 @@ def generate_launch_description():
     )
 
     ld = LaunchDescription([
+        DeclareLaunchArgument(
+            'panel', default_value='none',
+            choices=['none', 'screen', 'web', 'both'],
+            description='Control panel: none, desktop screen, browser web, or both.',
+        ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(str(
+                Path(__file__).resolve().parent / 'control_panel.launch.py'
+            )),
+            launch_arguments={'panel': LaunchConfiguration('panel')}.items(),
+        ),
         DeclareLaunchArgument(
             'simulated',
             default_value='false',

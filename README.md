@@ -73,3 +73,15 @@ See the linked guides for dependencies, configuration defaults, and examples.
 [Configuration layout](docs/configuration.md) explains `arm/`, `io/`,
 `system/`, `sdi/`, and `sim/`. See [troubleshooting](docs/troubleshooting.md)
 for topic, TF, model, and configuration issues.
+
+Robot launches accept `panel:=none|screen|web|both`. `screen` starts the desktop
+panel from `dvrk_console`; `web` starts the browser panel from `dvrk_utils`.
+All robot launches default to `none`. For example:
+
+```bash
+ros2 launch launch/openxr_dvrk_si.launch.py panel:=web
+ros2 launch launch/dvrk_full.launch.py panel:=both
+```
+
+Source the workspace containing `dvrk_utils` before using `web` or `both`.
+The web panel uses `/home/erie_lab/Documents/envs/torch/bin/python`.
