@@ -25,12 +25,12 @@
       }
     },
     "alignment": {
-      "horizontal_shift_px": 0,
-      "vertical_shift_px": 0
+      "horizontal_shift_px": 30,
+      "vertical_shift_px": -4
     },
     "crop": {
-      "width": 640,
-      "height": 480
+      "width": 587,
+      "height": 440
     }
   },
   "preserve_size": true,

@@ -1,0 +1,13 @@
+{
+    "instruments": [
+        {
+            "model": "400906",
+            "names": [
+                "LND_FORCEN"
+            ],
+            "description": "Large Needle Driver 400006 with ForceN shaft sensor",
+            "generation": "Classic",
+            "file": "tool/LND_FORCEN_400906.json"
+        }
+    ]
+}

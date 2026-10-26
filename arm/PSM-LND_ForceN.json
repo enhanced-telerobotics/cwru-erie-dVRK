@@ -1,0 +1,9 @@
+{
+    "$id": "dvrk-psm.schema.json",
+    "$version": "1",
+    "kinematic": "../tool/PSM-LND_ForceN-kinematic.json",
+    "generation": "Classic",
+    "tool_detection": "FIXED",
+    "tool": "LND_FORCEN:400906",
+    "custom_tool_index": "../tool/custom-tool-index-ForceN.json"
+}

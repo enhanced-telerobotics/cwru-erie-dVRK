@@ -1,0 +1,46 @@
+{
+    "DH": {
+        "convention": "modified",
+        "joints": [
+            {
+                "name": "yaw",
+                "alpha": 1.5708,
+                "A": 0.0,
+                "theta": 0.0,
+                "D": 0.0,
+                "type": "revolute",
+                "mode": "active",
+                "offset": 1.5708,
+                "qmin": -1.588,
+                "qmax": 1.588,
+                "ftmax": 3.316101
+            },
+            {
+                "name": "pitch",
+                "alpha": -1.5708,
+                "A": 0.0,
+                "theta": 0.0,
+                "D": 0.0,
+                "type": "revolute",
+                "mode": "active",
+                "offset": -1.5708,
+                "qmin": -0.925025,
+                "qmax": 0.925025,
+                "ftmax": 3.316101
+            },
+            {
+                "name": "insertion",
+                "alpha": 1.5708,
+                "A": 0.0,
+                "theta": 0.0,
+                "D": 0.0,
+                "type": "prismatic",
+                "mode": "active",
+                "offset": -0.4318,
+                "qmin": 0.05,
+                "qmax": 0.2,
+                "ftmax": 9.877926
+            }
+        ]
+    }
+}

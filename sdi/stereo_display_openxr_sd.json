@@ -1,0 +1,15 @@
+{
+  "type": "dvrk_console:stereo_display@1.0.0",
+  "name": "dvrk_openxr_sdi",
+  "dvrk_console_namespace": "console",
+  "overlay_alpha": 0.7,
+  "sinks": [],
+  "gst_input": "unixfdsrc socket-path=dvrk:stereo_alignment:stereo socket-type=abstract do-timestamp=true ! video/x-raw,format=I420,width=1280,height=480,pixel-aspect-ratio=1/1 ! tee name=xr_pad xr_pad. ! queue ! videocrop right=640 ! videobox left=-160 right=-160 top=-30 bottom=-30 ! xr_mix.sink_0 xr_pad. ! queue ! videocrop left=640 ! videobox left=-160 right=-160 top=-30 bottom=-30 ! xr_mix.sink_1 compositor name=xr_mix background=1 sink_0::xpos=0 sink_1::xpos=960 ! video/x-raw,format=I420,width=1920,height=540,pixel-aspect-ratio=1/1",
+  "gst_output": "@dvrk:console:stereo_overlay",
+  "eye_size": {
+    "width": 960,
+    "height": 540
+  },
+  "preserve_size": true,
+  "display_horizontal_offset_px": 18
+}

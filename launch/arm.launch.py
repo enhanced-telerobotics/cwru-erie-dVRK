@@ -1,3 +1,5 @@
+from launch.actions import OpaqueFunction
+from pathlib import Path
 import os
 import yaml
 from ament_index_python.packages import get_package_share_directory
@@ -30,38 +32,29 @@ def generate_launch_description():
     generation = LaunchConfiguration('generation')
     instrument = LaunchConfiguration('instrument', default='')
     endoscope = LaunchConfiguration('endoscope', default='')
-    simulated = LaunchConfiguration('simulated', default = 'true')
-    use_sim_time = LaunchConfiguration('use_sim_time', default = 'false')
     rate = LaunchConfiguration('rate', default = 50.0)  # Hz, default is 10 so we're increasing that a bit.
 
-    # Virtual uses the Virtual URDF, but its simulated PSM system configuration
-    # is the same as the Si configuration.
-    system_generation = PythonExpression([
-        "'Si' if '", generation, "' == 'Virtual' else '", generation, "'"
-    ])
-    rviz_generation = system_generation
-
-    system_json = [
-        PathJoinSubstitution([FindPackageShare('dvrk_config'), 'system', '']),
-        '/system-', arm, '_', system_generation, '_KIN_SIMULATED.json',
-    ]
+    system_config = LaunchConfiguration('system_config')
 
     rviz_config_file = [
-        PathJoinSubstitution([FindPackageShare('dvrk_model'), 'rviz', rviz_generation, '']),
+        PathJoinSubstitution([FindPackageShare('dvrk_model'), 'rviz', generation, '']),
         '/', arm, '.rviz',
     ]
 
     # Declare nodes
-    dvrk_node = Node(
-        package = 'dvrk_robot',
-        executable = 'dvrk_system',
-        condition = IfCondition(simulated),
-        arguments = ['-j', system_json],
-        output = 'log',
-    )
+    dvrk_node = OpaqueFunction(function=lambda context: [
+        Node(
+            package = 'dvrk_robot',
+            executable = 'dvrk_system',
+            arguments = ['-j', system_config] + (['-P', '0'] if IfCondition(LaunchConfiguration('use_rviz')).evaluate(context) else []),
+            cwd=str(Path(__file__).resolve().parent.parent),
+            output = 'screen',
+        )
+    ])
 
     publisher_nodes = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
+        condition=IfCondition(LaunchConfiguration('use_rviz')),
+        launch_description_source=PythonLaunchDescriptionSource(
             os.path.join(
                 get_package_share_directory('dvrk_model'),
                 'launch',
@@ -71,7 +64,7 @@ def generate_launch_description():
             'generation': generation,
             'instrument': instrument,
             'endoscope': endoscope,
-            'use_sim_time': use_sim_time,
+            'use_sim_time': 'false',
             'rate': rate,
             'suj': 'false',
             'show_rcm': LaunchConfiguration('show_rcm')
@@ -79,6 +72,7 @@ def generate_launch_description():
     )
 
     rviz_node = Node(
+        condition=IfCondition(LaunchConfiguration('use_rviz')),
         package = 'rviz2',
         executable = 'rviz2',
         name = 'rviz2',
@@ -88,6 +82,27 @@ def generate_launch_description():
 
     ld = LaunchDescription([
         SetEnvironmentVariable('RMW_FASTRTPS_USE_SHM', '0'),
+        DeclareLaunchArgument(
+            'use_rviz', default_value='false', choices=['true', 'false'],
+            description='Start RViz and model TF publishers instead of the robot TF tree.',
+        ),
+        DeclareLaunchArgument(
+            'panel', default_value='none',
+            choices=['none', 'screen', 'web', 'both'],
+            description='Control panel: none, desktop screen, browser web, or both.',
+        ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(str(
+                Path(__file__).resolve().parent / 'control_panel.launch.py'
+            )),
+            launch_arguments={'panel': LaunchConfiguration('panel')}.items(),
+        ),
+        DeclareLaunchArgument(
+            'system_config',
+            default_value=[str(Path(__file__).resolve().parent.parent / 'system/system-'),
+                           arm, '.json'],
+            description='Real-hardware dVRK system JSON file.',
+        ),
         DeclareLaunchArgument('arm'),
         DeclareLaunchArgument(
             'generation',
@@ -100,8 +115,6 @@ def generate_launch_description():
             description='PSM instrument model. Supported: {}'.format(
                 supported_psm_instruments_message())),
         DeclareLaunchArgument('endoscope', default_value=''),
-        DeclareLaunchArgument('simulated', default_value='true'),
-        DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('rate', default_value='50.0'),
         DeclareLaunchArgument('show_rcm', default_value='true'),
         dvrk_node,
