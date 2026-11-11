@@ -37,8 +37,8 @@
                 "type": "prismatic",
                 "mode": "active",
                 "offset": -0.4318,
-                "qmin": 0.05,
-                "qmax": 0.2,
+                "qmin": 0.065,
+                "qmax": 0.21,
                 "ftmax": 9.877926
             }
         ]
