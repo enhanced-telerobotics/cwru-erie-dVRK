@@ -23,7 +23,7 @@
                 "interface": "PSM1"
             },
             "IO": "IO1",
-            "arm_file": "../arm/PSM-LND_ForceN.json",
+            "arm_file": "../arm/PSM-400906-ForceN.json",
             "IO_file": "../io/sawRobotIO1394-PSM1-30142.json"
         },
         {
@@ -35,7 +35,7 @@
                 "interface": "PSM2"
             },
             "IO": "IO1",
-            "arm_file": "../arm/PSM-LND_ForceN.json",
+            "arm_file": "../arm/PSM-400972-ForceN.json",
             "IO_file": "../io/sawRobotIO1394-PSM2-28084.json"
         },
         {
