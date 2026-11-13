@@ -8,6 +8,33 @@
             "description": "Large Needle Driver 400006 with ForceN shaft sensor",
             "generation": "Classic",
             "file": "tool/LND_FORCEN_400906.json"
+        },
+        {
+            "model": "400972",
+            "names": [
+                "MBF_FORCEN"
+            ],
+            "description": "Maryland Bipolar Forceps 400172 with ForceN shaft sensor",
+            "generation": "Classic",
+            "file": "tool/MBF_FORCEN_400972.json"
+        },
+        {
+            "model": "420906",
+            "names": [
+                "LND_FORCEN"
+            ],
+            "description": "Large Needle Driver 420006 (non-geared) with ForceN shaft sensor",
+            "generation": "S",
+            "file": "tool/LND_FORCEN_420906.json"
+        },
+        {
+            "model": "400872",
+            "names": [
+                "MBF_FORCEN"
+            ],
+            "description": "Maryland Bipolar Forceps 400172E with ForceN shaft sensor",
+            "generation": "Classic",
+            "file": "tool/MBF_FORCEN_400872.json"
         }
     ]
 }
