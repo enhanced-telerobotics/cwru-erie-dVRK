@@ -2,6 +2,7 @@
   "type": "dvrk_console:stereo_display@1.0.0",
   "name": "dvrk_display_hrsv_bullet",
   "dvrk_console_namespace": "console",
+  "output_display": ":1.1",
   "sinks": [
     "glimages"
   ],
