@@ -10,6 +10,40 @@ Start the USB capture source, stereo alignment, and separate HRSV eye windows wi
 ros2 launch launch/stereo_video_pipeline_hrsv.launch.py
 ```
 
+The HD and SD HRSV display configurations set `"output_display": ":1.1"`.
+Launch from your desktop terminal with `DISPLAY=:1.0` (or `DISPLAY=:1`):
+the control widget stays on that desktop, and the image windows use `:1.1`.
+The monitor dropdowns list the HRSV screen's monitors; select each eye's
+monitor and enable Fullscreen. These choices are saved per viewer name.
+Both X displays must be accessible to your user through the normal Xauthority
+setup. An unavailable output display stops the viewer with an error.
+
+`:1.0` and `:1.1` are screens 0 and 1 of X display `:1`; an independent X
+server would use another display number, for example `:2.0`. Either form is
+supported. Edit `output_display` for your setup, or override it when running
+the viewer directly:
+
+```bash
+DISPLAY=:1.0 ros2 run dvrk_console stereo_display -c sdi/stereo_display_hrsv_hd.json --output-display :1.1
+```
+
+Omitting `output_display` or setting it to `""` keeps controls and images on
+the launch display. After updating `dvrk_console`, rebuild and source the
+workspace before using these configurations:
+
+```bash
+cd /home/erie_lab/dvrk_ws
+colcon build --packages-select dvrk_console
+source install/setup.bash
+```
+
+Configure the HRSV monitors as X screen `:1.1` before using these defaults.
+Check availability with `DISPLAY=:1.1 xrandr --listmonitors`. If that screen
+is unavailable, use the optional single-display behavior described above
+or override the output with `--output-display :1.0` when launching directly.
+The dedicated output screen gets a black background to clear stale frames
+when the viewer exits.
+
 The default configuration directory is this repository's `sdi/`, resolved from
 the launch file location. The source starts immediately, alignment after two
 seconds, and display after four seconds. This launch starts video processes;
