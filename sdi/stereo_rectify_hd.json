@@ -1,0 +1,13 @@
+{
+  "type": "dvrk_data:stereo_rectify@1.0.0",
+  "backend": "gpu",
+  "camera_info": {
+    "left": "/home/erie_lab/.ros/camera_info/stereo_source_left.yaml",
+    "right": "/home/erie_lab/.ros/camera_info/stereo_source_right.yaml"
+  },
+  "gst_input": "@dvrk:stereo_source:stereo",
+  "gst_output": "@dvrk:stereo_rectify:stereo",
+  "camera": {
+    "size": "auto"
+  }
+}

@@ -5,7 +5,7 @@ after sourcing your ROS 2 and dVRK workspace.
 
 ## HRSV stereo video
 
-Start the SDI source, stereo alignment, and separate HRSV eye windows with:
+Start the SDI source, GPU stereo rectification, and separate HRSV eye windows with:
 
 ```bash
 ros2 launch launch/stereo_video_pipeline_hrsv.launch.py
@@ -39,8 +39,11 @@ source install/setup.bash
 ```
 
 The default configuration directory is this repository's `sdi/`, resolved from
-the launch file location. The source starts immediately, alignment after two
-seconds, and display after four seconds. This launch starts video processes;
+the launch file location. The source starts immediately, rectification after
+two seconds, and display after four seconds. The rectifier uses
+`stereo_rectify_hd.json` and follows `~/.ros/camera_info/stereo_source_left.yaml` and
+`~/.ros/camera_info/stereo_source_right.yaml` at startup. Update both symlinks to a matched
+calibration pair and restart this launch after recalibrating. This launch starts video processes;
 run the full dVRK system separately for robot operation and HUD status.
 
 | Argument | Default | Purpose |
@@ -50,7 +53,6 @@ run the full dVRK system separately for robot operation and HUD status.
 | `system` | Empty | Optional subdirectory name under `config_parent`; when set, overrides `config_dir` |
 | `config_parent` | Empty | Parent directory for `system`; required when `system` is set |
 | `source_config` | `stereo_source_hd.json` | Capture configuration; relative to the base directory, or an absolute path |
-| `alignment_config` | `stereo_alignment_hd.json` | Camera alignment configuration; relative to the base directory, or an absolute path |
 | `display_config` | `stereo_display_hrsv_hd.json` | HRSV rendering configuration; relative to the base directory, or an absolute path |
 
 Here, `system` means a video configuration directory, not a robot system JSON.

@@ -1,5 +1,6 @@
 """Start the HRSV video pipeline using this repository's SDI configs."""
 
+import json
 import os
 
 from launch import LaunchDescription
@@ -10,7 +11,7 @@ from launch_ros.actions import Node
 
 
 DEFAULT_SOURCE_CONFIG = "stereo_source_hd.json"
-DEFAULT_ALIGNMENT_CONFIG = "stereo_alignment_hd.json"
+DEFAULT_RECTIFY_CONFIG = "stereo_rectify_hd.json"
 DEFAULT_DISPLAY_CONFIG = "stereo_display_hrsv_hd.json"
 DEFAULT_CONFIG_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir, "sdi")
@@ -45,11 +46,7 @@ def launch_setup(context, *args, **kwargs):
         LaunchConfiguration("source_config").perform(context),
         DEFAULT_SOURCE_CONFIG,
     )
-    alignment_config_path = resolve_config_path(
-        base_dir,
-        LaunchConfiguration("alignment_config").perform(context),
-        DEFAULT_ALIGNMENT_CONFIG,
-    )
+    rectify_config_path = os.path.join(base_dir, DEFAULT_RECTIFY_CONFIG)
     display_config_path = resolve_config_path(
         base_dir,
         LaunchConfiguration("display_config").perform(context),
@@ -58,26 +55,29 @@ def launch_setup(context, *args, **kwargs):
 
     missing = [
         path
-        for path in (source_config_path, alignment_config_path, display_config_path)
+        for path in (source_config_path, rectify_config_path, display_config_path)
         if not os.path.exists(path)
     ]
     if missing:
         raise RuntimeError("Missing configuration file(s): " + ", ".join(missing))
+
+    with open(source_config_path, encoding="utf-8") as config:
+        source_socket = json.load(config).get("gst_output", "@dvrk:stereo_source:stereo")
 
     source_node = Node(
         package="dvrk_data",
         executable="stereo_source",
         name="stereo_source",
         output="screen",
-        arguments=["-c", source_config_path],
+        arguments=["-c", source_config_path, "--stereo-output"],
     )
 
-    alignment_node = Node(
+    rectify_node = Node(
         package="dvrk_data",
-        executable="stereo_alignment",
-        name="stereo_alignment",
+        executable="stereo_rectify",
+        name="stereo_rectify",
         output="screen",
-        arguments=["-c", alignment_config_path],
+        arguments=["-c", rectify_config_path, "-i", source_socket],
     )
 
     display_node = Node(
@@ -90,7 +90,7 @@ def launch_setup(context, *args, **kwargs):
 
     return [
         source_node,
-        TimerAction(period=2.0, actions=[alignment_node]),
+        TimerAction(period=2.0, actions=[rectify_node]),
         TimerAction(period=4.0, actions=[display_node]),
         # gscam_socket checks for an active source socket before launching.
         TimerAction(
@@ -135,11 +135,6 @@ def generate_launch_description():
             "source_config",
             default_value=DEFAULT_SOURCE_CONFIG,
             description="dvrk_data stereo_source config filename or absolute path.",
-        ),
-        DeclareLaunchArgument(
-            "alignment_config",
-            default_value=DEFAULT_ALIGNMENT_CONFIG,
-            description="dvrk_data stereo_alignment config filename or absolute path.",
         ),
         DeclareLaunchArgument(
             "display_config",
