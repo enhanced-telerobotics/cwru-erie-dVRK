@@ -48,7 +48,7 @@ run the full dVRK system separately for robot operation and HUD status.
 
 | Argument | Default | Purpose |
 |---|---|---|
-| `use_ros` | `false` | Start left and right `gscam_socket` raw image publishers after four seconds |
+| `use_ros` | `false` | Start left and right `gscam` image publishers after four seconds |
 | `config_dir` | This repository's `sdi/` | Base directory for video JSON files when `system` is empty |
 | `system` | Empty | Optional subdirectory name under `config_parent`; when set, overrides `config_dir` |
 | `config_parent` | Empty | Parent directory for `system`; required when `system` is set |
@@ -68,6 +68,15 @@ ros2 launch launch/stereo_video_pipeline_hrsv.launch.py use_ros:=true
 The bridges consume `@dvrk:stereo_source:left` and
 `@dvrk:stereo_source:right`. The source sockets must be active when the bridges
 start; the four-second delay is not a readiness check.
+
+With `ffmpeg_image_transport` installed, each bridge sets an H.264 target bitrate
+of 8 Mbit/s. Check for a packet on each FFmpeg topic with:
+
+```bash
+for eye in left right; do
+  ros2 topic echo "/stereo_source/$eye/camera/image_raw/ffmpeg" --once --field encoding --timeout 15
+done
+```
 
 To select another video directory:
 

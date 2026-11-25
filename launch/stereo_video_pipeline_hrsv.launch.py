@@ -4,10 +4,18 @@ import json
 import os
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, OpaqueFunction, TimerAction
+from launch.actions import (
+    DeclareLaunchArgument,
+    GroupAction,
+    IncludeLaunchDescription,
+    OpaqueFunction,
+    TimerAction,
+)
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.actions import Node, SetParameter
+from launch_ros.substitutions import FindPackageShare
 
 
 DEFAULT_SOURCE_CONFIG = "stereo_source_hd.json"
@@ -24,6 +32,34 @@ def resolve_config_path(base_dir, value, default_name):
     if os.path.isabs(value):
         return value
     return os.path.join(base_dir, value)
+
+
+def launch_ros_bridges(_context):
+    from dvrk_data import dvrk_gst_socket
+
+    gscam_launch = PathJoinSubstitution([
+        FindPackageShare("dvrk_data"), "launch", "gscam.launch.py",
+    ])
+    bridges = []
+    for eye in ("left", "right"):
+        socket = dvrk_gst_socket.make("stereo_source", eye)
+        if not dvrk_gst_socket.check_socket(socket):
+            continue
+
+        bridges.append(GroupAction(actions=[
+            SetParameter(name="camera.image_raw.ffmpeg.encoder", value="h264_nvenc"),
+            SetParameter(name="camera.image_raw.ffmpeg.bit_rate", value=8_000_000),
+            SetParameter(name="camera.image_raw.ffmpeg.max_b_frames", value=0),
+            SetParameter(
+                name="camera.image_raw.ffmpeg.encoder_av_options",
+                value="preset:p1,tune:ull,zerolatency:1,rc-lookahead:0,delay:0",
+            ),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(gscam_launch),
+                launch_arguments={"socket": socket}.items(),
+            ),
+        ]))
+    return bridges
 
 
 def launch_setup(context, *args, **kwargs):
@@ -92,18 +128,10 @@ def launch_setup(context, *args, **kwargs):
         source_node,
         TimerAction(period=2.0, actions=[rectify_node]),
         TimerAction(period=4.0, actions=[display_node]),
-        # gscam_socket checks for an active source socket before launching.
         TimerAction(
             period=4.0,
             condition=IfCondition(LaunchConfiguration("use_ros")),
-            actions=[
-                ExecuteProcess(
-                    cmd=["ros2", "run", "dvrk_data", "gscam_socket",
-                         "@dvrk:stereo_source:" + eye],
-                    output="screen",
-                )
-                for eye in ("left", "right")
-            ],
+            actions=[OpaqueFunction(function=launch_ros_bridges)],
         ),
     ]
 
@@ -114,7 +142,7 @@ def generate_launch_description():
             "use_ros",
             default_value="false",
             choices=["true", "false"],
-            description="Publish both raw camera streams to ROS 2 using gscam_socket after four seconds.",
+            description="Start both gscam camera publishers after four seconds.",
         ),
         DeclareLaunchArgument(
             "config_dir",
