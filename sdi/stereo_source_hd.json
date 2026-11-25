@@ -7,11 +7,11 @@
       "height": 1080
     },
     "left": {
-      "gst_input": "decklinkvideosrc device-number=0 connection=sdi mode=1080i5994 ! deinterlace fields=bottom",
+      "gst_input": "decklinkvideosrc device-number=0 connection=sdi mode=1080i5994 ! deinterlace fields=all",
       "gst_output": "@dvrk:stereo_source:left"
     },
     "right": {
-      "gst_input": "decklinkvideosrc device-number=1 connection=sdi mode=1080i5994 ! deinterlace fields=bottom",
+      "gst_input": "decklinkvideosrc device-number=1 connection=sdi mode=1080i5994 ! deinterlace fields=all",
       "gst_output": "@dvrk:stereo_source:right"
     }
   }

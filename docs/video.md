@@ -46,9 +46,13 @@ two seconds, and display after four seconds. The rectifier uses
 calibration pair and restart this launch after recalibrating. This launch starts video processes;
 run the full dVRK system separately for robot operation and HUD status.
 
+The default `1080i5994` SDI source deinterlaces both fields into 59.94
+progressive frames per second per eye. The HRSV display and ROS image publishers
+use this capture rate.
+
 | Argument | Default | Purpose |
 |---|---|---|
-| `use_ros` | `false` | Start left and right `gscam` image publishers after four seconds |
+| `use_ros` | `true` | Start left and right `gscam` image publishers after four seconds |
 | `config_dir` | This repository's `sdi/` | Base directory for video JSON files when `system` is empty |
 | `system` | Empty | Optional subdirectory name under `config_parent`; when set, overrides `config_dir` |
 | `config_parent` | Empty | Parent directory for `system`; required when `system` is set |
@@ -59,10 +63,10 @@ Here, `system` means a video configuration directory, not a robot system JSON.
 The robot configuration belongs to `dvrk_full.launch.py`'s `system_config` argument.
 An absolute configuration filename overrides the base directory for that file.
 
-To also publish the raw left and right camera images to ROS 2:
+To run the HRSV display without ROS image publishing:
 
 ```bash
-ros2 launch launch/stereo_video_pipeline_hrsv.launch.py use_ros:=true
+ros2 launch launch/stereo_video_pipeline_hrsv.launch.py use_ros:=false
 ```
 
 The bridges consume `@dvrk:stereo_source:left` and
