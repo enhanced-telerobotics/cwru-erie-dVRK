@@ -39,8 +39,9 @@ source install/setup.bash
 ```
 
 The default configuration directory is this repository's `sdi/`, resolved from
-the launch file location. The source starts immediately, rectification after
-two seconds, and display after four seconds. The rectifier uses
+the launch file location. The source starts immediately. The rectifier starts
+when the side-by-side source socket is available, and the HRSV display starts
+when its rectified input socket is available. The rectifier uses
 `stereo_rectify_hd.json` and follows `~/.ros/camera_info/stereo_source_left.yaml` and
 `~/.ros/camera_info/stereo_source_right.yaml` at startup. Update both symlinks to a matched
 calibration pair and restart this launch after recalibrating. This launch starts video processes;
@@ -52,7 +53,7 @@ use this capture rate.
 
 | Argument | Default | Purpose |
 |---|---|---|
-| `use_ros` | `true` | Start left and right `gscam` image publishers after four seconds |
+| `use_ros` | `false` | Publish source, rectified, and overlaid image sockets to ROS 2 |
 | `config_dir` | This repository's `sdi/` | Base directory for video JSON files when `system` is empty |
 | `system` | Empty | Optional subdirectory name under `config_parent`; when set, overrides `config_dir` |
 | `config_parent` | Empty | Parent directory for `system`; required when `system` is set |
@@ -63,22 +64,30 @@ Here, `system` means a video configuration directory, not a robot system JSON.
 The robot configuration belongs to `dvrk_full.launch.py`'s `system_config` argument.
 An absolute configuration filename overrides the base directory for that file.
 
-To run the HRSV display without ROS image publishing:
+To publish the image streams while running the HRSV display:
 
 ```bash
-ros2 launch launch/stereo_video_pipeline_hrsv.launch.py use_ros:=false
+ros2 launch launch/stereo_video_pipeline_hrsv.launch.py use_ros:=true
 ```
 
-The bridges consume `@dvrk:stereo_source:left` and
-`@dvrk:stereo_source:right`. The source sockets must be active when the bridges
-start; the four-second delay is not a readiness check.
+| Stream | Default ROS image topic |
+|---|---|
+| Left source eye | `/stereo_source/left/camera/image_raw` |
+| Right source eye | `/stereo_source/right/camera/image_raw` |
+| Side-by-side source | `/stereo_source/stereo/camera/image_raw` |
+| Side-by-side rectified | `/stereo_rectify/stereo/camera/image_raw` |
+| Side-by-side display with overlays | `/stereo_display/overlay/camera/image_raw` |
+
+Each ROS publisher starts after its producer starts and its socket is available.
+The launch checks every 250 ms for up to 15 seconds per stage and logs the
+socket names if the wait expires. Custom socket names determine the ROS namespaces.
 
 With `ffmpeg_image_transport` installed, each bridge sets an H.264 target bitrate
 of 8 Mbit/s. Check for a packet on each FFmpeg topic with:
 
 ```bash
-for eye in left right; do
-  ros2 topic echo "/stereo_source/$eye/camera/image_raw/ffmpeg" --once --field encoding --timeout 15
+for stream in stereo_source/{left,right,stereo} stereo_rectify/stereo stereo_display/overlay; do
+  ros2 topic echo "/$stream/camera/image_raw/ffmpeg" --once --field encoding --timeout 15
 done
 ```
 

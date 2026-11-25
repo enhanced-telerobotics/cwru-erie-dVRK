@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 
 from launch import LaunchDescription
 from launch.actions import (
@@ -9,10 +10,13 @@ from launch.actions import (
     GroupAction,
     IncludeLaunchDescription,
     OpaqueFunction,
+    RegisterEventHandler,
     TimerAction,
 )
 from launch.conditions import IfCondition
+from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.logging import get_logger
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node, SetParameter
 from launch_ros.substitutions import FindPackageShare
@@ -24,6 +28,8 @@ DEFAULT_DISPLAY_CONFIG = "stereo_display_hrsv_hd.json"
 DEFAULT_CONFIG_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir, "sdi")
 )
+SOCKET_POLL_PERIOD = 0.25
+SOCKET_WAIT_ATTEMPTS = 60
 
 
 def resolve_config_path(base_dir, value, default_name):
@@ -34,32 +40,58 @@ def resolve_config_path(base_dir, value, default_name):
     return os.path.join(base_dir, value)
 
 
-def launch_ros_bridges(_context):
+def display_input_socket(gst_input):
+    if gst_input.startswith("@dvrk:"):
+        return gst_input
+
+    source = gst_input.partition("!")[0]
+    if re.match(r"^\s*unixfdsrc\s", source) and re.search(
+        r"""\bsocket-type\s*=\s*(?:abstract|"abstract"|'abstract')(?:\s|$)""", source
+    ):
+        path = re.search(r"""\bsocket-path\s*=\s*['"]?(dvrk:[^\s'"]+)""", source)
+        if path:
+            return "@" + path.group(1)
+    return ""
+
+
+def wait_for_sockets(_context, consumers, retries=SOCKET_WAIT_ATTEMPTS):
     from dvrk_data import dvrk_gst_socket
 
+    actions = []
+    pending = {}
+    available = set(dvrk_gst_socket.list_sockets())
+    for socket, on_ready in consumers.items():
+        if socket in available:
+            actions.extend(on_ready)
+        else:
+            pending[socket] = on_ready
+
+    if pending and retries:
+        actions.append(TimerAction(period=SOCKET_POLL_PERIOD, actions=[
+            OpaqueFunction(function=wait_for_sockets, args=[pending, retries - 1]),
+        ]))
+    elif pending:
+        get_logger(__name__).error("Timed out waiting for image sockets: " + ", ".join(pending))
+    return actions
+
+
+def ros_bridge(socket):
     gscam_launch = PathJoinSubstitution([
         FindPackageShare("dvrk_data"), "launch", "gscam.launch.py",
     ])
-    bridges = []
-    for eye in ("left", "right"):
-        socket = dvrk_gst_socket.make("stereo_source", eye)
-        if not dvrk_gst_socket.check_socket(socket):
-            continue
-
-        bridges.append(GroupAction(actions=[
-            SetParameter(name="camera.image_raw.ffmpeg.encoder", value="h264_nvenc"),
-            SetParameter(name="camera.image_raw.ffmpeg.bit_rate", value=8_000_000),
-            SetParameter(name="camera.image_raw.ffmpeg.max_b_frames", value=0),
-            SetParameter(
-                name="camera.image_raw.ffmpeg.encoder_av_options",
-                value="preset:p1,tune:ull,zerolatency:1,rc-lookahead:0,delay:0",
-            ),
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(gscam_launch),
-                launch_arguments={"socket": socket}.items(),
-            ),
-        ]))
-    return bridges
+    return GroupAction(actions=[
+        SetParameter(name="camera.image_raw.ffmpeg.encoder", value="h264_nvenc"),
+        SetParameter(name="camera.image_raw.ffmpeg.bit_rate", value=8_000_000),
+        SetParameter(name="camera.image_raw.ffmpeg.max_b_frames", value=0),
+        SetParameter(
+            name="camera.image_raw.ffmpeg.encoder_av_options",
+            value="preset:p1,tune:ull,zerolatency:1,rc-lookahead:0,delay:0",
+        ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(gscam_launch),
+            launch_arguments={"socket": socket}.items(),
+        ),
+    ])
 
 
 def launch_setup(context, *args, **kwargs):
@@ -98,7 +130,11 @@ def launch_setup(context, *args, **kwargs):
         raise RuntimeError("Missing configuration file(s): " + ", ".join(missing))
 
     with open(source_config_path, encoding="utf-8") as config:
-        source_socket = json.load(config).get("gst_output", "@dvrk:stereo_source:stereo")
+        source_config = json.load(config)
+    source_socket = source_config.get("gst_output", "@dvrk:stereo_source:stereo")
+    with open(display_config_path, encoding="utf-8") as config:
+        display_config = json.load(config)
+    display_socket = display_input_socket(display_config.get("gst_input", ""))
 
     source_node = Node(
         package="dvrk_data",
@@ -124,16 +160,45 @@ def launch_setup(context, *args, **kwargs):
         arguments=["-c", display_config_path],
     )
 
-    return [
-        source_node,
-        TimerAction(period=2.0, actions=[rectify_node]),
-        TimerAction(period=4.0, actions=[display_node]),
-        TimerAction(
-            period=4.0,
-            condition=IfCondition(LaunchConfiguration("use_ros")),
-            actions=[OpaqueFunction(function=launch_ros_bridges)],
-        ),
-    ]
+    source_consumers = {}
+    rectify_consumers = {}
+    display_consumers = {}
+    after_rectify_start = []
+    if display_socket:
+        rectify_consumers[display_socket] = [display_node]
+    else:
+        after_rectify_start.append(display_node)
+
+    if IfCondition(LaunchConfiguration("use_ros")).evaluate(context):
+        with open(rectify_config_path, encoding="utf-8") as config:
+            rectify_socket = json.load(config).get("gst_output", "@dvrk:stereo_rectify:stereo")
+        overlay_socket = display_config.get("gst_output", "@dvrk:stereo_display:overlay")
+
+        camera = source_config.get("camera", {})
+        source_sockets = (
+            camera.get("left", {}).get("gst_output"),
+            camera.get("right", {}).get("gst_output"),
+            source_socket,
+        )
+        for socket in dict.fromkeys(filter(None, source_sockets)):
+            source_consumers[socket] = [ros_bridge(socket)]
+        if rectify_socket:
+            rectify_consumers.setdefault(rectify_socket, []).insert(0, ros_bridge(rectify_socket))
+        if overlay_socket:
+            display_consumers[overlay_socket] = [ros_bridge(overlay_socket)]
+
+    source_consumers.setdefault(source_socket, []).append(rectify_node)
+    handlers = []
+    for node, consumers, on_start in (
+        (source_node, source_consumers, []),
+        (rectify_node, rectify_consumers, after_rectify_start),
+        (display_node, display_consumers, []),
+    ):
+        if consumers:
+            on_start.append(OpaqueFunction(function=wait_for_sockets, args=[consumers]))
+        if on_start:
+            handlers.append(RegisterEventHandler(OnProcessStart(target_action=node, on_start=on_start)))
+    return [*handlers, source_node]
 
 
 def generate_launch_description():
@@ -142,7 +207,7 @@ def generate_launch_description():
             "use_ros",
             default_value="false",
             choices=["true", "false"],
-            description="Start both gscam camera publishers after four seconds.",
+            description="Publish the configured source, rectified, and overlaid image sockets to ROS.",
         ),
         DeclareLaunchArgument(
             "config_dir",
